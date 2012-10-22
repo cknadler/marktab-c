@@ -2,7 +2,7 @@
 *.o
 
 # Binaries
-hkl
+marktab
 testbed
 *.out
 
