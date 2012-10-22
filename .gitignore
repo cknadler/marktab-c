@@ -1,0 +1,36 @@
+# Objects
+*.o
+
+# Binaries
+hkl
+testbed
+*.out
+
+# Automake generated files and folders
+Makefile
+src/Makefile
+config.log
+config.status
+*.Po
+*.cache/
+.deps/
+.libs/
+
+# Autotools needed files, but can be built on each system
+Makefile.in
+src/Makefile.in
+libtool
+aclocal.m4
+config.guess
+config.sub
+install-sh
+missing
+depcomp
+ylwrap
+configure
+
+# Flex and Bison generated files
+src/y.tab.h
+src/y.tab.c
+src/lex.yy.c
+src/y.tab.output
