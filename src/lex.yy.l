@@ -35,6 +35,6 @@ extern int yyerror(const char* msg);
 "p"                    return MT_T_PULL_OFF;
 
 [a-zA-Z_][a-zA-Z_0-9]* {
-  yylval.string = hkl_string_new_from_utf8(yytext);
+  yylval.string = mt_string_new_from_utf8(yytext);
   return MT_T_ID;
 }

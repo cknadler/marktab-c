@@ -9,10 +9,12 @@
 
 %error-verbose
 
+// Union
+
 %union
 {
   int       integer;
-  MTString* string;
+  MtString* string;
 }
 
 // Token List
@@ -29,40 +31,55 @@
 
 %token MT_T_BEND                  "b"
 %token MT_T_SLIDE_UP              "/"
-%token MT_T_SLIDE_DOWN            "\"
+%token MT_T_SLIDE_DOWN            "\\"
 %token MT_T_HAMMER_ON             "h"
 %token MT_T_PULL_OFF              "p"
 
-%token <integer> MT_T_STRING;
-%token <integer> MT_T_FRET;
-%token <string>  MT_T_ID;
+%token <integer> MT_T_STRING      "string number"
+%token <integer> MT_T_FRET        "fret number"
+%token <string>  MT_T_ID          "identifier"
 
 // Precedence
 
-%nonassoc MODIFIER
+  // There may be no need for precedence...
+  // For now, I have no idea.
 
 // Grammar
-
 %%
 
 program:
-  stmt_list
+  tab_list
 
 tab_list:
-  stmt_list stmt
+  tab_list tab_line
   | empty
 
-stmt:
-  note_list MT_T_END
+tab_line:
+  tab_list MT_T_END
   | chord_definition
 
+tab_list:
+  tab_list tab optional_transition tab
+  | tab_list tab
+  | tab
+
+tab:
+  note optional_modifier
+  | chord optional_modifier
+  | inline_chord optional_modifier
+
 note_list:
-  note_list note optional_transition note
-  | note_list note
+  note_list note
+  | note
 
 note:
-  MT_T_STRING MT_T_COLON MT_T_FRET optional_modifier
-  | chord optional_modifier
+  MT_T_STRING MT_T_COLON MT_T_FRET
+
+chord:
+  MT_T_ID
+
+inline_chord:
+  MT_T_LEFT_PAREN note_list MT_T_RIGHT_PAREN
 
 optional_transition:
   MT_T_BEND
@@ -72,12 +89,15 @@ optional_transition:
   | MT_T_PULL_OFF
   | empty
 
-optional_modifer:
+optional_modifier:
   MT_T_PALM_MUTE
   | MT_T_MUTE
   | MT_T_HARMONIC
   | MT_T_VIBRATO
   | empty
+
+chord_definition:
+  MT_T_ID MT_T_COLON inline_chord
   
 empty:
   // do nothing yo
