@@ -54,5 +54,5 @@ commands.each do |command|
   system("#{command}")
 end
 
-puts greenify "\nYour environment setup is complete. Run `make` to build hkl.\n"
+puts greenify "\nYour environment setup is complete. Run `make` to build.\n"
 
