@@ -20,7 +20,7 @@ int yyerror(const char* msg)
 
 int main(int argc, const char* argv[])
 {
-  // If there is a filename
+  // If there is a filename as a parameter
   if (argv[1])
   {
     yyin = fopen(argv[1], "r");
