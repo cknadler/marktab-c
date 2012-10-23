@@ -48,46 +48,57 @@
 %%
 
 program:
-  tab_list
+  section_list
 
-tab_list:
-  tab_list tab_line
+section_list:
+   section_list section
   | empty
 
-tab_line:
-  tab_list MT_T_END
-  | chord_definition
+section:
+  note_or_chord_list MT_T_END
+  | statement
 
-tab_list:
-  tab_list tab optional_transition tab
-  | tab_list tab
-  | tab
+statement:
+  chord_definition
 
-tab:
+note_or_chord_list:
+  note_or_chord_list note_or_chord
+  | note_or_chord
+  | note_or_chord transition note_or_chord
+
+note_or_chord:
   note optional_modifier
   | chord optional_modifier
   | inline_chord optional_modifier
+
+note:
+  MT_T_STRING MT_T_COLON MT_T_FRET 
+  {
+    // $$ = mt_object_new(MT_TYPE_NOTE, $1, $3);
+  }
+
+inline_chord:
+  MT_T_LEFT_PAREN note_list MT_T_RIGHT_PAREN
+  {
+
+  }
 
 note_list:
   note_list note
   | note
 
-note:
-  MT_T_STRING MT_T_COLON MT_T_FRET
-
 chord:
   MT_T_ID
 
-inline_chord:
-  MT_T_LEFT_PAREN note_list MT_T_RIGHT_PAREN
+chord_definition:
+  MT_T_ID MT_T_COLON inline_chord
 
-optional_transition:
+transition:
   MT_T_BEND
   | MT_T_SLIDE_UP
   | MT_T_SLIDE_DOWN
   | MT_T_HAMMER_ON
   | MT_T_PULL_OFF
-  | empty
 
 optional_modifier:
   MT_T_PALM_MUTE
@@ -96,8 +107,5 @@ optional_modifier:
   | MT_T_VIBRATO
   | empty
 
-chord_definition:
-  MT_T_ID MT_T_COLON inline_chord
-  
 empty:
   // do nothing yo
