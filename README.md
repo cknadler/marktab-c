@@ -6,7 +6,7 @@ Concise, machine readable, guitar tabs.
 
 To build run:
 
-`./build-env.rb`
+`./auto-build-env`
 
 and then, as normal:
 

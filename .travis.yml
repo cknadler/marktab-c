@@ -2,4 +2,4 @@ language: c
 compiler: 
   - clang
   - gcc
-script: ./build-env.rb && make
+script: ./auto-build-env && make
