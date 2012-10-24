@@ -5,4 +5,4 @@ AM_LFLAGS =
 
 bin_PROGRAMS = marktab
 
-marktab_SOURCES = y.tab.y lex.yy.l mt_string.c marktab.c mt_object.c mt_note.c mt_chord.c mt_transition.c
+marktab_SOURCES = y.tab.y lex.yy.l mt_string.c marktab.c mt_object.c mt_note.c mt_chord.c mt_transition.c mt_queue.c
