@@ -5,18 +5,20 @@
   #include <stdio.h>
 
   #include "mt_string.h"
-  #include "mt_object.h"
+  #include "mt_queue.h"
 
+  #include "mt_object.h"
   #include "mt_type.h"
   #include "mt_note.h"
   #include "mt_chord.h"
   #include "mt_transition.h"
-  #include "mt_queue.h"
+  #include "mt_output.h"
 
   extern int yylex();
   extern int yyerror(char const*);
 
-  // Global Variables
+  // Globals
+
   MtQueue* current_section_queue;
   
 %}
@@ -85,16 +87,14 @@ section_list:
   }
   section
   {
-    // execute section
+    mt_output_section(current_section_queue);
+    mt_queue_free(current_section_queue);
   }
 
   | empty
 
 section:
   note_or_chord_list MT_T_END
-  {
-    $$ = current_section_queue;
-  }
 
   | definition
   {

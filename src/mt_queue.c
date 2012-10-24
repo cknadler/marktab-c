@@ -106,7 +106,7 @@ void mt_queue_clear(MtQueue* queue)
   queue->back = NULL;
 }
 
-void queue_free(MtQueue* queue)
+void mt_queue_free(MtQueue* queue)
 {
   assert(queue != NULL);
 

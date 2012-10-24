@@ -1,8 +1,8 @@
 #ifndef MT_TYPE_H
 #define MT_TYPE_H
 
-#define MAX_STRINGS 12
-#define MAX_FRETS 40
+#define MT_MAX_STRINGS 12
+#define MT_MAX_FRETS 40
 
 typedef enum MtModifierType
 {

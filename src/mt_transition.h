@@ -18,7 +18,7 @@ typedef enum MtTransitionType
 typedef struct MtTransition
 {
   MtTransitionType type;
-  int strings[MAX_STRINGS];
+  int strings[MT_MAX_STRINGS];
 } MtTransition;
 
 MtTransition* mt_transition_new(MtTransitionType type, struct MtObject* start, struct MtObject* end);

@@ -8,7 +8,7 @@ struct MtNote;
 typedef struct MtChord
 {
   MtModifierType modifier;
-  struct MtNote* notes[MAX_FRETS];
+  struct MtNote* notes[MT_MAX_FRETS];
 } MtChord;
 
 MtChord* mt_chord_new(struct MtNote* notes[], MtModifierType modifier);
