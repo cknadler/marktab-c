@@ -2,16 +2,18 @@
 #define MT_OBJECT_H
 
 #include "mt_type.h"
+
 #include "mt_note.h"
 #include "mt_chord.h"
 #include "mt_transition.h"
 
 typedef enum MtObjectType
 {
-  MT_TYPE_NONE,
-  MT_TYPE_NOTE,
-  MT_TYPE_CHORD,
-  MT_TYPE_TRANSITION
+  MT_OBJ_TYPE_NONE,
+  MT_OBJ_TYPE_NOTE,
+  MT_OBJ_TYPE_CHORD,
+  MT_OBJ_TYPE_TRANSITION
+
 } MtObjectType;
 
 typedef struct MtObject

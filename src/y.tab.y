@@ -1,5 +1,7 @@
 %{
 
+  // Includes
+
   #include <stdio.h>
 
   #include "mt_string.h"
@@ -9,9 +11,14 @@
   #include "mt_note.h"
   #include "mt_chord.h"
   #include "mt_transition.h"
+  #include "mt_queue.h"
 
   extern int yylex();
   extern int yyerror(char const*);
+
+  // Global Variables
+  MtQueue* current_section_queue;
+  
 %}
 
 %error-verbose
@@ -25,7 +32,7 @@
   MtObject*     object;
   MtNote*       note;
   MtChord*      chord;
-  MtTransition* transition;
+  MtQueue*      queue;
 }
 
 // Token List
@@ -56,6 +63,7 @@
 %type <note> note
 %type <chord> chord
 %type <object> note_or_chord
+%type <queue> section
 %type <integer> transition
 %type <integer> optional_modifier
 
@@ -71,37 +79,64 @@ program:
   section_list
 
 section_list:
-   section_list section
+  section_list
+  {
+    current_section_queue = mt_queue_new();
+  }
+  section
+  {
+    // execute section
+  }
+
   | empty
 
 section:
   note_or_chord_list MT_T_END
-  | statement
+  {
+    $$ = current_section_queue;
+  }
 
-statement:
+  | definition
+  {
+    // add definition to symbol table
+  }
+
+definition:
   chord_definition
 
 note_or_chord_list:
   note_or_chord_list note_or_chord
+  {
+    mt_queue_enqueue(current_section_queue, $2); 
+  }
 
+  /* repetitive, might be able to clean up */
   | note_or_chord
+  {
+    mt_queue_enqueue(current_section_queue, $1);
+  }
 
   | note_or_chord transition note_or_chord
 
 note_or_chord:
-  note optional_modifier
+  note
+  {
+    $$ = mt_object_new(MT_OBJ_TYPE_NOTE, $1);
+  }
+
   | chord optional_modifier
   | inline_chord optional_modifier
 
 note:
-  MT_T_STRING MT_T_COLON fret_or_mute
+  MT_T_STRING MT_T_COLON MT_T_FRET optional_modifier
   {
-    // $$ = mt_object_new(MT_TYPE_NOTE, $1, $3);
+    $$ = mt_note_new($1, $3, $4);
   }
 
-fret_or_mute:
-  MT_T_FRET
-  | MT_T_MUTE
+  | MT_T_STRING MT_T_COLON MT_T_MUTE
+  {
+    $$ = mt_note_new_muted($1);
+  }
 
 inline_chord:
   MT_T_LEFT_PAREN note_list MT_T_RIGHT_PAREN

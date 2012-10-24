@@ -3,6 +3,8 @@
 
 #include "mt_type.h"
 
+struct MtObject;
+
 typedef enum MtTransitionType
 {
   MT_TRANSITION_NONE,
@@ -19,6 +21,8 @@ typedef struct MtTransition
   int strings[MAX_STRINGS];
 } MtTransition;
 
-MtTransition* mt_transition_new(MtTransitionType type, int strings[]);
+MtTransition* mt_transition_new(MtTransitionType type, struct MtObject* start, struct MtObject* end);
+
+void mt_transition_free(MtTransition* transition);
 
 #endif

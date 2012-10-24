@@ -2,15 +2,16 @@
 #define MT_CHORD_H
 
 #include "mt_type.h"
-#include "mt_note.h"
+
+struct MtNote;
 
 typedef struct MtChord
 {
   MtModifierType modifier;
-  MtNote* notes[MAX_FRETS];
+  struct MtNote* notes[MAX_FRETS];
 } MtChord;
 
-MtChord* mt_chord_new(MtNote* notes[], MtModifierType modifier);
+MtChord* mt_chord_new(struct MtNote* notes[], MtModifierType modifier);
 
 void mt_chord_free(MtChord* chord);
 
