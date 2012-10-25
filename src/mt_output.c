@@ -76,17 +76,92 @@ void mt_output_append_object(MtOutputLine* line, MtObject* object)
       {
         case MT_NOTE_TYPE_NOTE:
         {
+
           for (i = 1; i <= strings; ++i)
           {
             if (note->string == i)
             {
-              line->content[i][line->length - 1] = note->fret;
+              // First row note
+              line->content[i][line->length - 1] = note->fret % 10;
+
+              // optional second rote note
+              if (note->fret > 9)
+              {
+                line->content[i][line->length] = note->fret / 10;
+              }
+
+              // optional second or third row modifier
+              if (note->modifier != MT_MODIFIER_NONE)
+              {
+                char modifier;
+
+                switch (note->modifier)
+                {
+                  case MT_MODIFIER_PALM_MUTE:
+                    modifier = 'p';
+                    break;
+
+                  case MT_MODIFIER_HARMONIC:
+                    modifier = '*';
+                    break;
+
+                  case MT_MODIFIER_VIBRATO:
+                    modifier = '~';
+                    break;
+
+                  default:
+                    break;
+                }
+
+                if (note->fret > 9)
+                {
+                  line->content[i][line->length + 1] = modifier;
+                }
+                else
+                {
+                  line->content[i][line->length] = modifier;
+                }
+              }
             }
             else
             {
+              // first row spacer
               line->content[i][line->length - 1] = '-';
+
+              // optional second row spacer
+              if (note->fret > 9)
+              {
+                line->content[i][line->length] = '-';
+              }
+
+              // optional second or third row spacer
+              if (note->modifier != MT_MODIFIER_NONE)
+              {
+                if (note->fret > 9)
+                {
+                  line->content[i][line->length + 1] = '-';
+                }
+                else
+                {
+                  line->content[i][line->length + 1] = '-';
+                }
+              }
             }
           }
+
+          // Determine the amount of rows added
+          ++line->length;
+
+          if (note->fret > 9)
+          {
+            ++line->length;
+          }
+
+          if (note->modifier != MT_MODIFIER_NONE)
+          {
+            ++line->length;
+          }
+          
         }
         break;
 

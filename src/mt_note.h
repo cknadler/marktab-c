@@ -3,8 +3,6 @@
 
 #include "mt_type.h"
 
-#include <stdbool.h>
-
 typedef enum MtNoteType
 {
   MT_NOTE_TYPE_NOTE,
