@@ -14,9 +14,7 @@ extern int yyerror(const char* msg);
 [ \t\r]                /* Ignore Whitespace */
 [\n]                   yylineno++;
 
-
-\A[1-9]                return MT_T_STRING;
-\A[0-9]{1,2}           return MT_T_FRET;
+[0-9]{1,2}             return MT_T_NUMBER;
 
 ":"                    return MT_T_COLON;
 "("                    return MT_T_LEFT_PAREN;

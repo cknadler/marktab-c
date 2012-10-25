@@ -31,5 +31,10 @@ int main(int argc, const char* argv[])
     }
   }
 
+  yyparse();
+
+  if (yyin != NULL)
+    fclose(yyin);
+
   return 0;
 }

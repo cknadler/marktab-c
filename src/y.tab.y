@@ -56,9 +56,10 @@
 %token MT_T_HAMMER_ON             "h"
 %token MT_T_PULL_OFF              "p"
 
-%token <integer> MT_T_STRING      "string number"
-%token <integer> MT_T_FRET        "fret number"
+%token <integer> MT_T_NUMBER      "fret or string number"
 %token <string>  MT_T_ID          "identifier"
+
+%token END 0                      "end of file"
 
 // Type
 
@@ -94,7 +95,7 @@ section_list:
   | empty
 
 section:
-  note_or_chord_list MT_T_END
+  note_or_chord_list
 
   | definition
   {
@@ -110,7 +111,6 @@ note_or_chord_list:
     mt_queue_enqueue(current_section_queue, $2); 
   }
 
-  /* repetitive, might be able to clean up */
   | note_or_chord
   {
     mt_queue_enqueue(current_section_queue, $1);
@@ -128,12 +128,12 @@ note_or_chord:
   | inline_chord optional_modifier
 
 note:
-  MT_T_STRING MT_T_COLON MT_T_FRET optional_modifier
+  MT_T_NUMBER MT_T_COLON MT_T_NUMBER optional_modifier
   {
     $$ = mt_note_new($1, $3, $4);
   }
 
-  | MT_T_STRING MT_T_COLON MT_T_MUTE
+  | MT_T_NUMBER MT_T_COLON MT_T_MUTE
   {
     $$ = mt_note_new_muted($1);
   }
