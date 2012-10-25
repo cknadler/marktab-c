@@ -5,14 +5,6 @@
 
 #include "mt_alloc.h"
 
-// Prototypes
-
-void mt_output_append_object(MtOutputLine* line, MtObject* object);
-void mt_output_append_spacer(MtOutputLine* line);
-void mt_output_append_header(MtOutputLine* line);
-void mt_output_append_footer(MtOutputLine* line);
-
-
 // MtOutputLine
 
 MtOutputLine* mt_output_line_new()
@@ -22,43 +14,12 @@ MtOutputLine* mt_output_line_new()
 
   line->length = 0;
 
-  mt_output_append_line_header(line);
+  mt_output_line_append_header(line);
 
   return line;
 }
 
-void mt_output_line_free(MtOutputLine* line)
-{
-  assert(line != NULL);
-
-  line->length = 0;
-
-  mt_free_object(line);
-
-  line = NULL;
-}
-
-
-// Output
-
-void mt_output_section(MtQueue* section)
-{
-  assert(section != NULL);
-
-  MtOutputLine* line = mt_output_line_new();
-
-  MtObject* object = mt_queue_dequeue(section);
-
-  while (object != NULL)
-  {
-    mt_output_append_object(line, object);
-    mt_output_append_spacer(line);
-    object = mt_queue_dequeue(section);
-  }
-  
-}
-
-void mt_output_append_object(MtOutputLine* line, MtObject* object)
+void mt_output_line_append_object(MtOutputLine* line, MtObject* object)
 {
   assert(line != NULL);
   assert(object != NULL);
@@ -194,7 +155,7 @@ void mt_output_append_object(MtOutputLine* line, MtObject* object)
 
 }
 
-void mt_output_append_line_header(MtOutputLine* line)
+void mt_output_line_append_header(MtOutputLine* line)
 {
   assert(line != NULL);
 
@@ -219,7 +180,7 @@ void mt_output_append_line_header(MtOutputLine* line)
   line->length = 3;
 }
 
-void mt_output_append_line_footer(MtOutputLine* line)
+void mt_output_line_append_footer(MtOutputLine* line)
 {
   assert(line != NULL);
 
@@ -236,7 +197,7 @@ void mt_output_append_line_footer(MtOutputLine* line)
   ++line->length;
 }
 
-void mt_output_append_spacer(MtOutputLine* line)
+void mt_output_line_append_spacer(MtOutputLine* line)
 {
   assert(line != NULL);
   
@@ -252,3 +213,35 @@ void mt_output_append_spacer(MtOutputLine* line)
 
   ++line->length;
 }
+
+void mt_output_line_free(MtOutputLine* line)
+{
+  assert(line != NULL);
+
+  line->length = 0;
+
+  mt_free_object(line);
+
+  line = NULL;
+}
+
+
+// System Output
+
+void mt_output_section(MtQueue* section)
+{
+  assert(section != NULL);
+
+  MtOutputLine* line = mt_output_line_new();
+
+  MtObject* object = mt_queue_dequeue(section);
+
+  while (object != NULL)
+  {
+    mt_output_line_append_object(line, object);
+    mt_output_line_append_spacer(line);
+    object = mt_queue_dequeue(section);
+  }
+}
+
+
