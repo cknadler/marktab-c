@@ -39,3 +39,5 @@ extern int yyerror(const char* msg);
   yylval.string = mt_string_new_from_utf8(yytext);
   return MT_T_ID;
 }
+
+.                      yyerror(yytext);
