@@ -4,13 +4,13 @@
 #include "mt_queue.h"
 #include "mt_object.h"
 
-#define MT_LINE_LENGTH 80
+#define MT_MAX_LINE_LENGTH 80
 
 // MtOutputLine
 
 typedef struct MtOutputLine
 {
-  char* content[MT_MAX_STRINGS][MT_LINE_LENGTH];
+  char content[MT_MAX_STRINGS][MT_MAX_LINE_LENGTH];
 
   int length;
 

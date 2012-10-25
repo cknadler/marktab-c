@@ -20,14 +20,12 @@ typedef struct MtObject
 {
   MtObjectType type;
 
-  union objectval
+  union asvalue
   {
     MtNote* note;
     MtChord* chord;
     MtTransition* transition;
-  } objectval;
-
-  int width;
+  } as;
 
 } MtObject;
 
