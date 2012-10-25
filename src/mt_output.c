@@ -93,7 +93,7 @@ void mt_output_append_object(MtOutputLine* line, MtObject* object)
               // optional second or third row modifier
               if (note->modifier != MT_MODIFIER_NONE)
               {
-                char modifier;
+                char modifier = '-';
 
                 switch (note->modifier)
                 {
