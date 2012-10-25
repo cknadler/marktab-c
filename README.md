@@ -1,6 +1,6 @@
 # marktab
 
-![travis](https://travis-ci.org/cknadler/marktab.png "travis")
+[![travis](https://travis-ci.org/cknadler/marktab.png "travis")](https://travis-ci.org/cknadler/marktab)
 
 Concise, machine readable, guitar tabs.
 
