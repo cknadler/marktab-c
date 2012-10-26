@@ -47,6 +47,8 @@
 
 %token MT_T_MUTE                  "x"
 
+%token MT_T_REST                  "r"
+
 %token MT_T_PALM_MUTE             "m"
 %token MT_T_HARMONIC              "*"
 %token MT_T_VIBRATO               "~"
@@ -131,6 +133,8 @@ note_or_chord:
   }
 
   | chord_symbol optional_modifier
+
+  | MT_T_REST
 
 note:
   MT_T_NUMBER MT_T_COLON MT_T_NUMBER optional_modifier
