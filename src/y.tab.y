@@ -25,7 +25,10 @@
 
 %error-verbose
 
-// Union
+
+/*
+  Union
+*/
 
 %union
 {
@@ -37,7 +40,10 @@
   MtQueue*      queue;
 }
 
-// Token List
+
+/*
+  Token List
+*/
 
 %token MT_T_COLON                 ":"
 %token MT_T_LEFT_PAREN            "("
@@ -45,7 +51,7 @@
 
 %token MT_T_END                   "|"
 
-%token MT_T_MUTE                  "x"
+%token MT_T_X                     "x"
 
 %token MT_T_REST                  "r"
 
@@ -64,7 +70,10 @@
 
 %token END 0                      "end of file"
 
-// Type
+
+/*
+  Type declaration
+*/
 
 %type <note> note
 %type <object> note_or_chord
@@ -73,12 +82,17 @@
 %type <integer> transition
 %type <integer> optional_modifier
 
-// Precedence
 
-  // There may be no need for precedence...
-  // For now, I have no idea.
+/*
+  Precedence
+*/
 
-// Grammar
+  // For now, there is no need for precedence.
+  // If there ever is, the rules would go here.
+
+/*
+  Grammar
+*/
 %%
 
 program:
@@ -133,8 +147,15 @@ note_or_chord:
   }
 
   | chord_symbol optional_modifier
+  {
+    // Lookup chord in hash table
+    // Create an object with chord and pass it up the tree
+  }
 
   | MT_T_REST
+  {
+    // Create an object with rest and pass it up the tree
+  }
 
 note:
   MT_T_NUMBER MT_T_COLON MT_T_NUMBER optional_modifier
@@ -142,17 +163,31 @@ note:
     $$ = mt_note_new($1, $3, $4);
   }
 
-  | MT_T_NUMBER MT_T_COLON MT_T_MUTE
+  | MT_T_NUMBER MT_T_COLON MT_T_X
   {
     $$ = mt_note_new_muted($1);
   }
 
 inline_chord:
-  MT_T_LEFT_PAREN note_list MT_T_RIGHT_PAREN
+  MT_T_LEFT_PAREN
+  {
+    // Create a temporary chord queue
+  }
+  note_list MT_T_RIGHT_PAREN
+  {
+    // Free the tempoarary chord queue
+  }
 
 note_list:
   note_list note
+  {
+    // Add note to temporary chord queue  
+  }
+
   | note
+  {
+    // Add note to temporary chord queue
+  }
 
 chord_symbol:
   MT_T_ID

@@ -20,7 +20,7 @@ extern int yyerror(const char* msg);
 
 "|"                    return MT_T_END;
 
-"x"                    return MT_T_MUTE;
+"x"                    return MT_T_X;
 
 "r"                    return MT_T_REST;
 
