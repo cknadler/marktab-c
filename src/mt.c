@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+#include "mt.h"
+
 extern FILE* yyin;
 extern FILE* yyout;
 extern int yylex();
@@ -30,6 +32,8 @@ int main(int argc, const char* argv[])
       return 1;
     }
   }
+
+  mtr_init();
 
   yyparse();
 

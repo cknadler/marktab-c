@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 
-#include "marktab.h"
+#include "mt.h"
 
 extern int yyerror(const char* msg);
 
