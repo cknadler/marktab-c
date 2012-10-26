@@ -38,17 +38,24 @@ void mt_output_line_append_object(MtOutputLine* line, MtObject* object)
         case MT_NOTE_TYPE_NOTE:
         {
 
-          for (i = 1; i <= strings; ++i)
+          for (i = 0; i < strings; ++i)
           {
-            if (note->string == i)
+            if (i == note->string - 1)
             {
-              // First row note
-              line->content[i][line->length - 1] = note->fret % 10;
 
-              // optional second rote note
               if (note->fret > 9)
               {
-                line->content[i][line->length] = note->fret / 10;
+                line->content[i][line->length] = 
+                  (char)(((int)'0')+(note->fret / 10));
+
+                line->content[i][line->length + 1] = 
+                  (char)(((int)'0')+(note->fret % 10)); 
+              } 
+              else 
+              {
+                // First row note
+                line->content[i][line->length] = 
+                  (char)(((int)'0')+(note->fret));
               }
 
               // optional second or third row modifier
@@ -76,23 +83,23 @@ void mt_output_line_append_object(MtOutputLine* line, MtObject* object)
 
                 if (note->fret > 9)
                 {
-                  line->content[i][line->length + 1] = modifier;
+                  line->content[i][line->length + 2] = modifier;
                 }
                 else
                 {
-                  line->content[i][line->length] = modifier;
+                  line->content[i][line->length + 1] = modifier;
                 }
               }
             }
             else
             {
               // first row spacer
-              line->content[i][line->length - 1] = '-';
+              line->content[i][line->length] = '-';
 
               // optional second row spacer
               if (note->fret > 9)
               {
-                line->content[i][line->length] = '-';
+                line->content[i][line->length + 1] = '-';
               }
 
               // optional second or third row spacer
@@ -100,7 +107,7 @@ void mt_output_line_append_object(MtOutputLine* line, MtObject* object)
               {
                 if (note->fret > 9)
                 {
-                  line->content[i][line->length + 1] = '-';
+                  line->content[i][line->length + 2] = '-';
                 }
                 else
                 {
@@ -128,15 +135,15 @@ void mt_output_line_append_object(MtOutputLine* line, MtObject* object)
 
 
         case MT_NOTE_TYPE_MUTE:
-          for (i = 1; i <= strings; ++i)
+          for (i = 0; i < strings; ++i)
           {
-            if (note->string == i)
+            if (i == note->string - 1)
             {
-              line->content[i][line->length - 1] = 'x';
+              line->content[i][line->length] = 'x';
             }
             else
             {
-              line->content[i][line->length - 1] = '-';
+              line->content[i][line->length] = '-';
             }
           }
 
@@ -184,14 +191,14 @@ void mt_output_line_append_footer(MtOutputLine* line)
 {
   assert(line != NULL);
 
-  assert(line->length < MT_MAX_LINE_LENGTH);
+  assert(line->length < MT_MAX_LINE_LENGTH - 1);
 
   int strings = 6;
 
   int i;
   for (i = 0; i < strings; ++i)
   {
-    line->content[i][line->length - 1] = '|';
+    line->content[i][line->length] = '|';
   }
 
   ++line->length;
@@ -208,7 +215,7 @@ void mt_output_line_append_spacer(MtOutputLine* line)
   int i;
   for (i = 0; i < strings; ++i)
   {
-    line->content[i][line->length - 1] = '-';
+    line->content[i][line->length] = '-';
   }
 
   ++line->length;
@@ -232,6 +239,8 @@ void mt_output_section(MtQueue* section)
 {
   assert(section != NULL);
 
+  // Parse the section into a line
+  // This will eventually be multiple lines
   MtOutputLine* line = mt_output_line_new();
 
   MtObject* object = mt_queue_dequeue(section);
@@ -241,6 +250,21 @@ void mt_output_section(MtQueue* section)
     mt_output_line_append_object(line, object);
     mt_output_line_append_spacer(line);
     object = mt_queue_dequeue(section);
+  }
+
+  mt_output_line_append_footer(line);
+
+  // Output the lines
+  int strings = 6;
+  int i, j;
+
+  for (i = 0; i < strings; ++i)
+  {
+    for (j = 0; j < line->length; ++j)
+    {
+      printf("%c", line->content[i][j]);
+    }
+    printf("\n");
   }
 }
 

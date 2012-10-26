@@ -14,12 +14,11 @@ extern int yyerror(const char* msg);
 [ \t\r]                /* Ignore Whitespace */
 [\n]                   yylineno++;
 
-[0-9]{1,2}             return MT_T_NUMBER;
-
 ":"                    return MT_T_COLON;
 "("                    return MT_T_LEFT_PAREN;
 ")"                    return MT_T_RIGHT_PAREN;
-"end"                  return MT_T_END;
+
+"|"                    return MT_T_END;
 
 "x"                    return MT_T_MUTE;
 
@@ -36,6 +35,11 @@ extern int yyerror(const char* msg);
 [a-zA-Z_][a-zA-Z_0-9]* {
   yylval.string = mt_string_new_from_utf8(yytext);
   return MT_T_ID;
+}
+
+[0-9]{1,2} {
+  sscanf(yytext, "%i", &yylval.integer);
+  return MT_T_NUMBER;
 }
 
 .                      yyerror(yytext);

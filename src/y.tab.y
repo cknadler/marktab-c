@@ -42,7 +42,8 @@
 %token MT_T_COLON                 ":"
 %token MT_T_LEFT_PAREN            "("
 %token MT_T_RIGHT_PAREN           ")"
-%token MT_T_END                   "end"
+
+%token MT_T_END                   "|"
 
 %token MT_T_MUTE                  "x"
 
@@ -56,16 +57,16 @@
 %token MT_T_HAMMER_ON             "h"
 %token MT_T_PULL_OFF              "p"
 
-%token <integer> MT_T_NUMBER      "fret or string number"
-%token <string>  MT_T_ID          "identifier"
+%token <integer> MT_T_NUMBER
+%token <string>  MT_T_ID
 
 %token END 0                      "end of file"
 
 // Type
 
 %type <note> note
-%type <chord> chord
 %type <object> note_or_chord
+%type <chord> inline_chord
 %type <queue> section
 %type <integer> transition
 %type <integer> optional_modifier
@@ -95,7 +96,7 @@ section_list:
   | empty
 
 section:
-  note_or_chord_list
+  note_or_chord_list MT_T_END
 
   | definition
   {
@@ -124,8 +125,12 @@ note_or_chord:
     $$ = mt_object_new(MT_OBJ_TYPE_NOTE, $1);
   }
 
-  | chord optional_modifier
   | inline_chord optional_modifier
+  {
+    $$ = mt_object_new(MT_OBJ_TYPE_CHORD, $1);
+  }
+
+  | chord_symbol optional_modifier
 
 note:
   MT_T_NUMBER MT_T_COLON MT_T_NUMBER optional_modifier
@@ -145,7 +150,7 @@ note_list:
   note_list note
   | note
 
-chord:
+chord_symbol:
   MT_T_ID
 
 chord_definition:
@@ -162,7 +167,7 @@ optional_modifier:
   MT_T_PALM_MUTE { $$ = MT_MODIFIER_PALM_MUTE; }
   | MT_T_HARMONIC { $$ = MT_MODIFIER_HARMONIC; }
   | MT_T_VIBRATO { $$ = MT_MODIFIER_VIBRATO; }
-  | empty
+  | empty { $$ = MT_MODIFIER_NONE; }
 
 empty:
   // do nothing yo
