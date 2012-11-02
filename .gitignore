@@ -3,7 +3,6 @@
 
 # Binaries
 marktab
-testbed
 *.out
 
 # Automake generated files and folders
