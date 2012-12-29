@@ -1,13 +1,21 @@
-# marktab
-
-[![travis](https://travis-ci.org/cknadler/marktab.png "travis")](https://travis-ci.org/cknadler/marktab)
+# marktab [![travis](https://travis-ci.org/cknadler/marktab.png "travis")](https://travis-ci.org/cknadler/marktab)
 
 Concise, machine readable, guitar tabs.
 
-To build run:
+## Development
 
-`./auto-build-env`
+To build run (only the first time):
 
-and then, as normal:
+```bash
+./auto-build-env
+```
 
-`make`
+and then, as usual:
+
+```bash
+make
+```
+
+## Copyright
+
+Copyright (c) 2012 Chris Knadler. See LICENSE for details.
