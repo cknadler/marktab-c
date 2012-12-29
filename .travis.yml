@@ -2,4 +2,6 @@ language: c
 compiler: 
   - clang
   - gcc
+before_install:
+  - git submodule update --init --recursive
 script: ./auto-build-env && make
