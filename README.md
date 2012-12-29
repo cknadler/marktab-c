@@ -4,10 +4,20 @@ Concise, machine readable, guitar tabs.
 
 ## Development
 
+marktab is actively under development. Contributions are more than welcome.
+
+#### Compile
+
+Requirements:
+
+* automake
+* autoconf
+* libtool
+
 To build run (only the first time):
 
 ```bash
-./auto-build-env && bundle install
+./auto-build-env
 ```
 
 and then, as usual:
@@ -16,17 +26,24 @@ and then, as usual:
 make
 ```
 
-#### requirements
+#### Testing
 
-To build: 
-
-* automake
-* autoconf
-* libtool
-
-To test:
+Requirements:
 
 * ruby v1.9.3 or greater
+* bundler
+
+Before testing, run: 
+
+```bash
+bundle install
+```
+
+And then, to run all tests:
+
+```bash
+rcomp test
+```
 
 ## Copyright
 
