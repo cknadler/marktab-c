@@ -7,7 +7,7 @@ Concise, machine readable, guitar tabs.
 To build run (only the first time):
 
 ```bash
-./auto-build-env
+./auto-build-env && bundle install
 ```
 
 and then, as usual:
@@ -15,6 +15,18 @@ and then, as usual:
 ```bash
 make
 ```
+
+#### requirements
+
+To build: 
+
+* automake
+* autoconf
+* libtool
+
+To test:
+
+* ruby v1.9.3 or greater
 
 ## Copyright
 
