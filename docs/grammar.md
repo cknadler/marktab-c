@@ -41,6 +41,28 @@ A|-----|
 E|-----|
 ```
 
+#### shorthand special case
+
+When a note is defined, all notes following default to the string of that note if a string isn't specified. 
+
+For example, the following are equivalent:
+
+```
+1:9 7 8 9
+```
+```
+1:9 1:7 1:8 1:9
+```
+
+Another example:
+
+```
+1:9 7 2:8 9
+```
+```
+1:9 1:7 2:8 2:9
+```
+
 ## inline chord
 
 Inline chords are groups of notes played at the same time on different strings. An inline chord, specifically, is the grouping of these notes inline.
@@ -186,7 +208,7 @@ Sequences add a way encapsulate groups of notes and chords.
 #### format
 
 ```
-[(1:5 2:5) r 1:5] ^2
+[(1:5 2:5) r 1:5] ^ 2
 ```
 
 #### output
@@ -226,7 +248,7 @@ OpenG: (6:3 5:2 4:0 3:0 2:2 1:2)
 OpenC: (5:3 4:2 3:0 2:1 1:0)
 OpenEm: (6:0 5:2 4:2 3:0 2:0 1:0)
 Riff: [5:3 4:0 4:2 3:0 2:0]
-Chorus: [OpenEm [OpenG Riff] ^4 OpenG OpenC]
+Chorus: [OpenEm [OpenG Riff] ^ 4 OpenG OpenC]
 
 Chorus ^ 4
 ```
