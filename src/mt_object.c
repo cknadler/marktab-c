@@ -25,6 +25,10 @@ MtObject* mt_object_new(MtObjectType type, void* value)
       object->as.transition = value;
       break;
 
+    case MT_OBJ_TYPE_SEQUENCE:
+      object->as.sequence = value;
+      break;
+
     default:
       // MtObject should be constructed with a valid type
       assert(false);
@@ -32,6 +36,16 @@ MtObject* mt_object_new(MtObjectType type, void* value)
   }
 
   object->type = type;
+
+  return object;
+}
+
+MtObject* mt_object_new_rest()
+{
+  MtObject* object = mt_alloc_object(MtObject);
+  assert(object != NULL);
+
+  object->type = MT_OBJ_TYPE_REST;
 
   return object;
 }

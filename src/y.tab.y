@@ -1,29 +1,37 @@
 %{
 
-  // Includes
+  /*
+    Includes
+  */
 
+  // StdLib
   #include <stdio.h>
 
+  // External
   #include "mt_string.h"
   #include "mt_queue.h"
 
+  // Internal
   #include "mtr.h"
   #include "mt_object.h"
   #include "mt_type.h"
   #include "mt_note.h"
   #include "mt_chord.h"
   #include "mt_transition.h"
+  #include "mt_sequence.h"
   #include "mt_output.h"
 
   extern int yylex();
   extern int yyerror(char const*);
 
   // Globals
-
   MtQueue* current_section_queue;
-  
+  MtQueue* current_sequence_queue;
+  int last_note_string;
+
 %}
 
+%start tab
 %error-verbose
 
 
@@ -38,7 +46,7 @@
   MtObject*     object;
   MtNote*       note;
   MtChord*      chord;
-  MtQueue*      queue;
+  MtSequence*   sequence;
 }
 
 
@@ -46,13 +54,24 @@
   Token List
 */
 
+/* Please keep these in the same order as the tokens in lex.yy.l */
+
+%token MT_T_NEWLINE               "newline"
+
+%token MT_T_PRINT_LINE            "print line"
+
+%token MT_T_MULTIPLY              "^"
+
 %token MT_T_COLON                 ":"
+%token MT_T_COMMA                 ","
+
+%token MT_T_LEFT_BRACKET          "["
+%token MT_T_RIGHT_BRACKET         "]"
+
 %token MT_T_LEFT_PAREN            "("
 %token MT_T_RIGHT_PAREN           ")"
 
-%token MT_T_END                   "|"
-
-%token MT_T_X                     "x"
+%token MT_T_MUTE                  "x"
 
 %token MT_T_REST                  "r"
 
@@ -66,8 +85,8 @@
 %token MT_T_HAMMER_ON             "h"
 %token MT_T_PULL_OFF              "p"
 
-%token <integer> MT_T_NUMBER
-%token <string>  MT_T_ID
+%token <string>  MT_T_ID          "identifier"
+%token <integer> MT_T_NUMBER      "number"
 
 %token END 0                      "end of file"
 
@@ -76,138 +95,121 @@
   Type declaration
 */
 
-%type <note> note
-%type <object> note_or_chord
-%type <chord> inline_chord
-%type <queue> section
-%type <integer> transition
-%type <integer> optional_modifier
+/*
+%type <integer> transition optional_modifier optional_multiplier
+%type <note>    note
+%type <object>  object
+*/
 
 
 /*
   Precedence
 */
 
-  // For now, there is no need for precedence.
-  // If there ever is, the rules would go here.
+// For now, there is no need for precedence.
+// If there ever is, the rules would go here.
+
 
 /*
   Grammar
 */
+
 %%
 
-program:
-  section_list
+tab:
+  line_list
 
-section_list:
-  section_list
-  {
-    current_section_queue = mt_queue_new();
-  }
-  section
-  {
-    mt_output_section(current_section_queue);
-    mt_queue_free(current_section_queue);
-  }
+line_list:
+  line_list line
+  | line
 
-  | empty
+line:
+  tab_line
+  | definition_line
+  | print_line
 
-section:
-  note_or_chord_list MT_T_END
+definition_line:
+  definition MT_T_NEWLINE
 
-  | definition
-  {
-    // add definition to symbol table
-  }
+print_line:
+  MT_T_PRINT_LINE
 
-definition:
-  chord_definition
+tab_line:
+  object_group_list MT_T_NEWLINE
 
-note_or_chord_list:
-  note_or_chord_list note_or_chord
-  {
-    mt_queue_enqueue(current_section_queue, $2); 
-  }
+object_group_list:
+  object_group_list object_group
+  | object_group
 
-  | note_or_chord
-  {
-    mt_queue_enqueue(current_section_queue, $1);
-  }
+object_group:
+  object_block transition object_block
+  | object_block
 
-  | note_or_chord transition note_or_chord
+object_block:
+  object optional_multiplier
 
-note_or_chord:
-  note
-  {
-    $$ = mt_object_new(MT_OBJ_TYPE_NOTE, $1);
-  }
-
+object:
+  note optional_modifier
   | inline_chord optional_modifier
-  {
-    $$ = mt_object_new(MT_OBJ_TYPE_CHORD, $1);
-  }
-
-  | chord_symbol optional_modifier
-  {
-    // Lookup chord in hash table
-    // Create an object with chord and pass it up the tree
-  }
-
+  | inline_sequence optional_modifier
+  | MT_T_ID optional_modifier
   | MT_T_REST
-  {
-    // Create an object with rest and pass it up the tree
-  }
 
+/* NOTES */
 note:
-  MT_T_NUMBER MT_T_COLON MT_T_NUMBER optional_modifier
-  {
-    $$ = mt_note_new($1, $3, $4);
-  }
+  MT_T_NUMBER MT_T_COLON MT_T_NUMBER
+  | MT_T_NUMBER MT_T_COLON MT_T_MUTE
+  | MT_T_NUMBER
+  | MT_T_MUTE
 
-  | MT_T_NUMBER MT_T_COLON MT_T_X
-  {
-    $$ = mt_note_new_muted($1);
-  }
-
+/* CHORDS */
 inline_chord:
-  MT_T_LEFT_PAREN
-  {
-    // Create a temporary chord queue
-  }
-  note_list MT_T_RIGHT_PAREN
-  {
-    // Free the tempoarary chord queue
-  }
+  MT_T_LEFT_PAREN chord_note_list MT_T_RIGHT_PAREN
+ 
+chord_note_list:
+  chord_note_list chord_note
+  | chord_note
+ 
+chord_note:
+  string_list MT_T_COLON MT_T_NUMBER
+ 
+string_list:
+  string_list MT_T_COMMA MT_T_NUMBER
+  | MT_T_NUMBER
 
-note_list:
-  note_list note
-  {
-    // Add note to temporary chord queue  
-  }
+/* SEQUENCES */
+inline_sequence:
+  MT_T_LEFT_BRACKET object_group_list MT_T_RIGHT_BRACKET
 
-  | note
-  {
-    // Add note to temporary chord queue
-  }
+/* TRANSITIONS */
+transition:
+  MT_T_BEND 
+  | MT_T_SLIDE_UP
+  | MT_T_SLIDE_DOWN
+  | MT_T_HAMMER_ON
+  | MT_T_PULL_OFF
 
-chord_symbol:
-  MT_T_ID
+/* DEFINITIONS */
+definition:
+  chord_definition 
+  | sequence_definition
 
 chord_definition:
   MT_T_ID MT_T_COLON inline_chord
 
-transition:
-  MT_T_BEND { $$ = MT_TRANSITION_BEND; } 
-  | MT_T_SLIDE_UP { $$ = MT_TRANSITION_SLIDE_UP; }
-  | MT_T_SLIDE_DOWN { $$ = MT_TRANSITION_SLIDE_DOWN; }
-  | MT_T_HAMMER_ON { $$ = MT_TRANSITION_HAMMER_ON; }
-  | MT_T_PULL_OFF { $$ = MT_TRANSITION_PULL_OFF; }
-
+sequence_definition:
+  MT_T_ID MT_T_COLON inline_sequence
+ 
+/* OPTIONAL MODIFIERS AND MULTIPLIERS */
+optional_multiplier:
+  MT_T_MULTIPLY MT_T_NUMBER
+  | empty
+ 
 optional_modifier:
-  MT_T_PALM_MUTE { $$ = MT_MODIFIER_PALM_MUTE; }
-  | MT_T_HARMONIC { $$ = MT_MODIFIER_HARMONIC; }
-  | MT_T_VIBRATO { $$ = MT_MODIFIER_VIBRATO; }
-  | empty { $$ = MT_MODIFIER_NONE; }
+  MT_T_PALM_MUTE 
+  | MT_T_HARMONIC
+  | MT_T_VIBRATO
+  | empty
 
-empty:
-  // do nothing yo
+/* EMTPY */
+empty: /* Do nothing yo */ ;

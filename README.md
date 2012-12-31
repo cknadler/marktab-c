@@ -17,7 +17,8 @@ Requirements:
 To build run (only the first time):
 
 ```bash
-./auto-build-env
+bundle install
+rake
 ```
 
 and then, as usual:
@@ -33,7 +34,7 @@ Requirements:
 * ruby v1.9.3 or greater
 * bundler
 
-Before testing, run: 
+Before testing (only the first time) run: 
 
 ```bash
 bundle install

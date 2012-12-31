@@ -109,8 +109,6 @@ void mt_queue_clear(MtQueue* queue)
 void mt_queue_free(MtQueue* queue)
 {
   assert(queue != NULL);
-
   mt_queue_clear(queue);
-
   mt_free_object(queue);
 }

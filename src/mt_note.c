@@ -3,7 +3,7 @@
 #include "mt_alloc.h"
 #include <assert.h>
 
-MtNote* mt_note_new(int string, int fret, MtModifierType modifier)
+MtNote* mt_note_new(int string, int fret)
 {
   MtNote* note = mt_alloc_object(MtNote);
   assert(note != NULL);
@@ -12,7 +12,7 @@ MtNote* mt_note_new(int string, int fret, MtModifierType modifier)
 
   note->string = string;
   note->fret = fret;
-  note->modifier = modifier;
+  note->modifier = MT_MODIFIER_NONE;
 
   return note;
 }
@@ -29,7 +29,16 @@ MtNote* mt_note_new_muted(int string)
   return note;
 }
 
+void mt_note_set_modifier(MtNote* note, MtModifierType type)
+{
+  assert(note != NULL);
+
+  note->modifier = type;
+}
+
 void mt_note_free(MtNote* note)
 {
+  assert(note != NULL);
+
   mt_free_object(note);
 }

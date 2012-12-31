@@ -10,17 +10,24 @@ extern int yyerror(const char* msg);
 
 %%
 
-"//".*[\n]             yylineno++;/* Ignore Comments */
+[#].*[\n]              yylineno++;/* Ignore Comments */
 [ \t\r]                /* Ignore Whitespace */
-[\n]                   yylineno++;
+^[ \t\r]*\n            yylineno++; /* Ignore empty lines */
+
+[=].*[\n]              return MT_T_PRINT_LINE;
+
+"^"                    return MT_T_MULTIPLY;
 
 ":"                    return MT_T_COLON;
+","                    return MT_T_COMMA;
+
+"["                    return MT_T_LEFT_BRACKET;
+"]"                    return MT_T_RIGHT_BRACKET;
+
 "("                    return MT_T_LEFT_PAREN;
 ")"                    return MT_T_RIGHT_PAREN;
 
-"|"                    return MT_T_END;
-
-"x"                    return MT_T_X;
+"x"                    return MT_T_MUTE;
 
 "r"                    return MT_T_REST;
 
@@ -39,9 +46,14 @@ extern int yyerror(const char* msg);
   return MT_T_ID;
 }
 
-[0-9]{1,2} {
+[0-9]+ {
   sscanf(yytext, "%i", &yylval.integer);
   return MT_T_NUMBER;
+}
+
+[\n] {
+  yylineno++;
+  return MT_T_NEWLINE;
 }
 
 .                      yyerror(yytext);

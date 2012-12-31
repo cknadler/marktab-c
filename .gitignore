@@ -2,6 +2,7 @@
 *.o
 
 # Binaries
+testbed
 marktab
 *.out
 
