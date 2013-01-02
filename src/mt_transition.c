@@ -14,6 +14,5 @@ MtTransition* mt_transition_new(MtTransitionType type, MtObject* start, MtObject
 void mt_transition_free(MtTransition* transition)
 {
   assert(transition != NULL);
-
   mt_free_object(transition);
 }

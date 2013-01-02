@@ -13,19 +13,19 @@ MtObject* mt_object_new(MtObjectType type, void* value)
 
   switch (type)
   {
-    case MT_OBJ_TYPE_NOTE: 
+    case MT_OBJ_NOTE: 
       object->as.note = value;
       break;
       
-    case MT_OBJ_TYPE_CHORD:
+    case MT_OBJ_CHORD:
       object->as.chord = value;
       break;
 
-    case MT_OBJ_TYPE_TRANSITION:
+    case MT_OBJ_TRANSITION:
       object->as.transition = value;
       break;
 
-    case MT_OBJ_TYPE_SEQUENCE:
+    case MT_OBJ_SEQUENCE:
       object->as.sequence = value;
       break;
 
@@ -45,7 +45,7 @@ MtObject* mt_object_new_rest()
   MtObject* object = mt_alloc_object(MtObject);
   assert(object != NULL);
 
-  object->type = MT_OBJ_TYPE_REST;
+  object->type = MT_OBJ_REST;
 
   return object;
 }
@@ -56,15 +56,15 @@ void mt_object_free(MtObject* object)
 
   switch (object->type)
   {
-    case MT_OBJ_TYPE_NOTE:
+    case MT_OBJ_NOTE:
       mt_note_free(object->as.note);
       break;
 
-    case MT_OBJ_TYPE_CHORD:
+    case MT_OBJ_CHORD:
       mt_chord_free(object->as.chord);
       break;
 
-    case MT_OBJ_TYPE_TRANSITION:
+    case MT_OBJ_TRANSITION:
       mt_transition_free(object->as.transition);
       break;
 

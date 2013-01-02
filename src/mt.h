@@ -10,7 +10,8 @@
 #include "mt_note.h"
 #include "mt_chord.h"
 #include "mt_transition.h"
-#include "mt_output.h"
+#include "mt_sequence.h"
+#include "mt_config.h"
 
 #include "y.tab.h"
 

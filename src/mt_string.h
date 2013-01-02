@@ -163,5 +163,5 @@ Free a MtString and releases any allocated resources it has.
 */
 void mt_string_free(MtString* string);
 
-#endif // HKL_STRING_H
+#endif // MT_STRING_H
 
