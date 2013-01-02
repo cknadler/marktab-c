@@ -1,8 +1,8 @@
 #include "mtr.h"
 
-// Marktab runtime implementation goes here
-
+// Initialize the marktab runtime
 void mtr_init()
 {
   // Setup marktab runtime
+  // Initialize all global variables required for the parser
 }

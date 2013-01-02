@@ -126,11 +126,24 @@ section_list:
   | section
 
 section:
-  tab_line_list section_break
+  {
+    // New queue: current_section_queue
+    // New scope
+  }
+  tab_line_list 
+  {
+    // add current_section_queue to tab_queue
+    // dealloc queue
+    // dealloc scope
+  }
+  section_break
   | section_break
 
 section_break:
   print_line
+  {
+    // add print_line to tab_queue
+  }
   | MT_T_EOF
 
 tab_line_list:
@@ -142,7 +155,11 @@ tab_line:
   | object_line
 
 definition_line:
-  definition MT_T_NEWLINE
+  definition_list MT_T_NEWLINE
+
+definition_list:
+  definition_list definition
+  | definition
 
 print_line:
   MT_T_PRINT_LINE
