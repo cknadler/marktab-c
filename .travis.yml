@@ -4,4 +4,4 @@ compiler:
   - gcc
 before_install:
   - git submodule update --init --recursive
-script: ./auto-build-env && make
+script: rake && make
