@@ -1,6 +1,6 @@
 desc "Build Env"
 task :build_env do
-  system('./auto-build-env')
+  system('build/auto-build-env')
 end
 
 desc "Check Bison Output"

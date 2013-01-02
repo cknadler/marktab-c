@@ -1,3 +1,6 @@
 [submodule "test"]
   path = test
   url = git://github.com/cknadler/marktab-tests.git
+[submodule "build"]
+  path = build
+  url = git://github.com/cknadler/auto-build-env.git
