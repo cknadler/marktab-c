@@ -6,6 +6,7 @@ AM_LFLAGS =
 bin_PROGRAMS = marktab testbed
 
 marktab_SOURCES = y.tab.y lex.yy.l mt_string.c mt.c mt_object.c mt_note.c \
-mt_chord.c mt_transition.c mt_sequence.c mt_queue.c mtr.c mt_config.c
+mt_chord.c mt_transition.c mt_sequence.c mt_queue.c mtr.c mt_config.c \
+mt_scope.c
 
 testbed_SOURCES = mt_stack.c testbed.c

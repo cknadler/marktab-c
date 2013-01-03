@@ -6,10 +6,8 @@
 typedef struct MtQueue
 {
   size_t size;
-
   struct MtQueueNode* front;
   struct MtQueueNode* back;
-
 } MtQueue;
 
 // Creates a new empty queue

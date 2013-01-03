@@ -3,17 +3,22 @@
 #include <assert.h>
 
 // MtStackNode
-//
 
-MtStackNode* mt_stack_node_new()
+static MtStackNode* mt_stack_node_new(void* value)
 {
   MtStackNode* node = (MtStackNode *) malloc(sizeof(MtStackNode));
   assert(node != NULL);
 
-  node->value = NULL;
+  node->value = value;
   node->next = NULL;
 
   return node;
+}
+
+static void mt_stack_node_free(MtStackNode* node)
+{
+  assert(node != NULL);
+  free(node);
 }
 
 // MtStack
@@ -24,6 +29,7 @@ MtStack* mt_stack_new()
   assert(stack != NULL);
 
   stack->head = NULL;
+  stack->size = 0;
 
   return stack;
 }
@@ -33,20 +39,27 @@ void mt_stack_push(MtStack* stack, void* value)
   assert(stack != NULL);
   assert(value != NULL);
 
-  MtStackNode* node = mt_stack_node_new();
-  node->value = value;
+  MtStackNode* node = mt_stack_node_new(value);
   node->next = stack->head;
   stack->head = node;
+  stack->size++;
 }
 
 void* mt_stack_pop(MtStack* stack)
 {
   assert(stack != NULL);
 
-  MtStackNode* popped = stack->head;
-  stack->head = popped->next;
-  void* value = popped->value;
-  free(popped);
+  MtStackNode* node = stack->head;
+  void* data = NULL;
 
-  return value;
+  if (stack->head != NULL)
+  {
+    stack->size--;
+    stack->head = stack->head->next;
+
+    data = node->value;
+    mt_stack_node_free(node);
+  }
+
+  return data;
 }

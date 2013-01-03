@@ -1,6 +1,8 @@
 #ifndef MT_STACK_H
 #define MT_STACK_H
 
+#include <stddef.h>
+
 typedef struct MtStackNode
 {
   void* value;
@@ -10,6 +12,7 @@ typedef struct MtStackNode
 typedef struct MtStack
 {
   MtStackNode* head;
+  size_t size;
 } MtStack;
 
 MtStack* mt_stack_new();
