@@ -3,11 +3,17 @@
 
 #include "mt.h"
 
+#include "mt_stack.h"
+#include "mt_queue.h"
+
 extern FILE* yyin;
 extern FILE* yyout;
 extern int yylex();
 extern int yyparse();
+extern char* yytext;
 extern int yylineno;
+
+// Parser globals
 
 int yywrap()
 {
@@ -33,9 +39,19 @@ int main(int argc, const char* argv[])
     }
   }
 
+  // Initailze the marktab runtime
   mtr_init();
+  mt_config_init();
 
+  // Initialize parser globals
+
+  // Parse the input
   yyparse();
+
+  // Output
+  mt_output(MTR.sections);
+
+  // Dealloc parser globals
 
   if (yyin != NULL)
     fclose(yyin);

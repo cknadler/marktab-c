@@ -3,22 +3,35 @@
 #include "mt_config.h"
 #include "mt_alloc.h"
 
-// To avoid multiple linker definitions
-MtConfig* mt_global_config;
-
-MtConfig* mt_config_new()
+void mt_config_init()
 {
-  MtConfig* config = mt_alloc_object(MtConfig);
-  assert(config != NULL);
-
   // Default number of strings
-  config->strings = 6;
+  mt_conf.strings = 6;
 
   // Default string names
-  config->string_names = "EADGBe";
+  mt_conf.string_names = "eBGDAE";
 
   // Default line length
-  config->line_length = 80;
+  mt_conf.max_line_length = 80;
+}
 
-  return config;
+void mt_config_set_max_line_length(int length)
+{
+  // TODO: Error checking here
+  
+  mt_conf.max_line_length = length;
+}
+
+void mt_config_set_string_names(char* names)
+{
+  // TODO: Error checking here
+
+  mt_conf.string_names = names;
+}
+
+void mt_config_set_num_strings(int strings)
+{
+  // TODO: Error checking here
+  
+  mt_conf.strings = strings;
 }

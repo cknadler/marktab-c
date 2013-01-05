@@ -5,7 +5,7 @@
 
 typedef struct MtQueue
 {
-  size_t size;
+  int size;
   struct MtQueueNode* front;
   struct MtQueueNode* back;
 } MtQueue;

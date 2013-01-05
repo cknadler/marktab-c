@@ -56,6 +56,8 @@ extern int yyerror(const char* msg);
   return MT_T_NEWLINE;
 }
 
-<<EOF>>                return MT_T_EOF;
+<<EOF>> {
+  return MT_T_EOF;
+}
 
 .                      yyerror(yytext);

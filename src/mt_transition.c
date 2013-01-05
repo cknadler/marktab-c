@@ -6,9 +6,20 @@
 #include "mt_object.h"
 #include "mt_alloc.h"
 
-MtTransition* mt_transition_new(MtTransitionType type, MtObject* start, MtObject* end)
+MtTransition* mt_transition_new(MtTransitionType type, MtObject* destination)
 {
-  return NULL;
+  MtTransition* transition = mt_alloc_object(MtTransition);
+  assert(transition != NULL);
+  assert(type != MT_TRANSITION_NONE);
+
+  assert(destination != NULL);
+  assert((destination->type == MT_OBJ_NOTE) || 
+         (destination->type == MT_OBJ_CHORD));
+
+  transition->type = type;
+  transition->destination = destination;
+
+  return transition;
 }
 
 void mt_transition_free(MtTransition* transition)

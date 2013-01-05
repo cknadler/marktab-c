@@ -20,4 +20,7 @@ MtStack* mt_stack_new();
 void mt_stack_push(MtStack* stack, void* value);
 void* mt_stack_pop(MtStack* stack);
 
+void mt_stack_clear(MtStack* stack);
+void mt_stack_free(MtStack* stack);
+
 #endif

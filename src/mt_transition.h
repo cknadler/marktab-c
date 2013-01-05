@@ -18,11 +18,10 @@ typedef enum MtTransitionType
 typedef struct MtTransition
 {
   MtTransitionType type;
-  struct MtObject* start;
-  struct MtObject* end;
+  struct MtObject* destination;
 } MtTransition;
 
-MtTransition* mt_transition_new(MtTransitionType type, struct MtObject* start, struct MtObject* end);
+MtTransition* mt_transition_new(MtTransitionType type, struct MtObject* destination);
 
 void mt_transition_free(MtTransition* transition);
 

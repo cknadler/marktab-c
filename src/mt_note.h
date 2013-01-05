@@ -15,6 +15,7 @@ typedef struct MtNote
   int string;
   int fret;
   MtModifierType modifier;
+  int size;
 } MtNote;
 
 // Constructors

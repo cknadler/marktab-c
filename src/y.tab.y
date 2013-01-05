@@ -1,9 +1,5 @@
 %{
 
-  /*
-    Includes
-  */
-
   // StdLib
   #include <stdio.h>
 
@@ -21,21 +17,18 @@
   #include "mt_sequence.h"
   #include "mt_config.h"
 
+  #define YYDEBUG 0
+
   extern int yylex();
   extern int yyerror(char const*);
 
-  // Globals
-  MtQueue* tab_queue;
-  MtQueue* current_tab_section_queue;
-  int last_note_string;
+  // Parser globals
+  
+  // Parser locals
+  MtQueue* current_section_construction;
 
-  void initialize_parser_globals()
-  {
-    mt_global_config = mt_config_new();
-    tab_queue = mt_queue_new();
-    current_tab_section_queue = NULL;
-    last_note_string = 0;
-  }
+  // TODO: REMOVE, temporary to make compiler happy
+  int last_note_string;
 
 %}
 
@@ -93,14 +86,13 @@
 %token <string>  MT_T_ID          "identifier"
 %token <integer> MT_T_NUMBER      "number"
 
-%token MT_T_EOF                   "end of file"
-
+%token MT_T_EOF "end of file"
 
 /*
   Type declaration
 */
 
-%type <integer> transition optional_modifier optional_multiplier
+%type <integer> transition optional_modifier multiplier
 %type <note>    note
 %type <object>  object
 
@@ -111,6 +103,11 @@
 // For now, there is no need for precedence.
 // If there ever is, the rules would go here.
 
+
+%initial-action 
+{
+  // Pre parse initializations go here
+}
 
 /*
   Grammar
@@ -127,14 +124,13 @@ section_list:
 
 section:
   {
-    // New queue: current_section_queue
-    // New scope
+    // Create a new section queue
+    current_section_construction = mt_queue_new();
   }
-  tab_line_list 
+  tab_line_list
   {
-    // add current_section_queue to tab_queue
-    // dealloc queue
-    // dealloc scope
+    // Queue the now completed section into the runtime section queue
+    mt_queue_enqueue(MTR.sections, current_section_construction);
   }
   section_break
   | section_break
@@ -144,7 +140,8 @@ section_break:
   {
     // add print_line to tab_queue
   }
-  | MT_T_EOF
+  /* TODO: FIX...this is extremely janky */
+  | MT_T_EOF { YYACCEPT; }
 
 tab_line_list:
   tab_line_list tab_line
@@ -172,11 +169,40 @@ object_group_list:
   | object_group
 
 object_group:
-  object_block transition object_block
-  | object_block
+  object 
+  { 
+    mt_queue_enqueue(current_section_construction, $1); 
+  }
 
-object_block:
-  object optional_multiplier
+  | object
+  {
+    // TODO: Emit error if $1 is not a note or chord
+    mt_queue_enqueue(current_section_construction, $1);
+  } 
+  transition_chain
+
+  | object multiplier
+  {
+    int i; 
+    for(i = 0; i < $2; ++i)
+    {
+      mt_queue_enqueue(current_section_construction, $1);
+    }
+  }
+
+transition_chain:
+  transition_chain transition_group
+  | transition_group
+
+transition_group:
+  transition object
+  {
+    // TODO: Emit error if $2 is not a note or chord
+    MtTransition* transition = mt_transition_new($1, $2);
+    MtObject* transition_object = mt_object_new(MT_OBJ_TRANSITION, transition);
+    mt_queue_enqueue(current_section_construction, transition_object);
+    mt_queue_enqueue(current_section_construction, $2);
+  }
 
 object:
   note optional_modifier
@@ -255,9 +281,8 @@ sequence_definition:
   MT_T_ID MT_T_COLON inline_sequence
  
 /* OPTIONAL MODIFIERS AND MULTIPLIERS */
-optional_multiplier:
+multiplier:
   MT_T_MULTIPLY MT_T_NUMBER { $$ = $2; }
-  | empty { $$ = 1; }
  
 optional_modifier:
   MT_T_PALM_MUTE { $$ = MT_MODIFIER_PALM_MUTE; }

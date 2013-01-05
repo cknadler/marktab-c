@@ -63,3 +63,27 @@ void* mt_stack_pop(MtStack* stack)
 
   return data;
 }
+
+void mt_stack_clear(MtStack* stack)
+{
+  assert(stack != NULL);
+  MtStackNode* node = stack->head;
+  MtStackNode* next;
+
+  while (node != NULL)
+  {
+    next = node->next;
+    mt_stack_node_free(node);
+    node = next;
+  }
+
+  stack->head = NULL;
+  stack->size = 0;
+}
+
+void mt_stack_free(MtStack* stack)
+{
+  assert(stack != NULL);
+  mt_stack_clear(stack);
+  free(stack);
+}

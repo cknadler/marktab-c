@@ -1,18 +1,25 @@
 #include "mt_note.h"
 
-#include "mt_alloc.h"
 #include <assert.h>
+
+#include "mt_alloc.h"
+#include "mt_math.h"
 
 MtNote* mt_note_new(int string, int fret)
 {
   MtNote* note = mt_alloc_object(MtNote);
   assert(note != NULL);
+  assert(string > 0);
+  assert(fret >= 0);
 
   note->type = MT_NOTE_TYPE_NOTE;
 
-  note->string = string;
+  note->string = string - 1;
   note->fret = fret;
   note->modifier = MT_MODIFIER_NONE;
+
+  // Calculate the size (width) of the printed note
+  note->size = digits(fret);
 
   return note;
 }
@@ -26,12 +33,19 @@ MtNote* mt_note_new_muted(int string)
 
   note->string = string;
 
+  note->size = 1;
+
   return note;
 }
 
 void mt_note_set_modifier(MtNote* note, MtModifierType type)
 {
   assert(note != NULL);
+
+  if((note->modifier == MT_MODIFIER_NONE) && (type != MT_MODIFIER_NONE))
+  {
+    note->size++;
+  }
 
   note->modifier = type;
 }
