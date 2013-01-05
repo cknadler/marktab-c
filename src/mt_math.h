@@ -3,6 +3,6 @@
 
 #include <math.h>
 
-#define digits(integer) (floor(log10(abs(integer))) + 1)
+#define digits(integer) (floor(log10(fabs(integer))) + 1)
 
 #endif
