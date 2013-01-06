@@ -5,8 +5,9 @@
 
 typedef enum MtNoteType
 {
-  MT_NOTE_TYPE_NOTE,
-  MT_NOTE_TYPE_MUTE
+  MT_NOTE_NONE,
+  MT_NOTE_NOTE,
+  MT_NOTE_MUTE
 } MtNoteType;
 
 typedef struct MtNote
@@ -21,9 +22,13 @@ typedef struct MtNote
 // Constructors
 MtNote* mt_note_new(int string, int fret);
 MtNote* mt_note_new_muted(int string);
+MtNote* mt_note_new_without_fret(int string);
 
 // Setters
-void mt_note_set_modifier(MtNote* note, MtModifierType type);
+void mt_note_set_modifier(MtNote* note, MtModifierType modifier);
+
+void mt_note_set_fret(MtNote* note, int fret);
+void mt_note_set_muted(MtNote* note);
 
 // Destructors
 void mt_note_free(MtNote* note);

@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "mt_alloc.h"
 #include "mt_object.h"
@@ -13,11 +14,13 @@ void mt_output_print_tab();
 void mt_output_header();
 void mt_output_footer();
 void mt_output_spacer();
-void mt_output_object();
-void mt_output_note();
-void mt_output_chord();
-void mt_output_sequence();
-void mt_output_transition();
+void mt_output_object(MtObject* object);
+void mt_output_note_block(MtNote* note);
+void mt_output_spacer_line(int string, int length);
+void mt_output_note(MtNote* note, int length);
+void mt_output_chord(MtChord* chord);
+void mt_output_sequence(MtSequence* sequence);
+void mt_output_transition(MtTransition* transition);
 
 MtOutputLine* mt_output_line_new();
 void mt_output_line_free();
@@ -140,11 +143,26 @@ void mt_output_object(MtObject* object)
   switch(object->type)
   {
     case MT_OBJ_NOTE:
-      // Do some checks to see if output is possible
-      mt_output_note(object->as.note);
+      // TODO: check to see if output is possible
+      mt_output_note_block(object->as.note);
+      break;
+
+    case MT_OBJ_CHORD:
+      // TODO: check to see if output is possible
+      mt_output_chord(object->as.chord);
+      break;
+
+    case MT_OBJ_TRANSITION:
+      // TODO: check to see if output is possible
+      mt_output_transition(object->as.transition);
+      break;
+
+    case MT_OBJ_SEQUENCE:
+      mt_output_sequence(object->as.sequence);
       break;
 
     case MT_OBJ_REST:
+      // TODO: check to see if output is possible
       mt_output_spacer();
       break;
 
@@ -155,41 +173,90 @@ void mt_output_object(MtObject* object)
 }
 
 // Output a note to the current line
-void mt_output_note(MtNote* note)
+void mt_output_note_block(MtNote* note)
 {
-  // Convert the note fret to an array of characters
-  char* note_chars = malloc(MT_CONFIG_MAX_FRET_DIGITS);
-  int digits = sprintf(note_chars, "%d", note->fret);
+  mt_output_note(note, note->size);
 
-  int i, j;
-  for(i = 0; i < mt_conf.strings; ++i)
+  int string;
+  for (string = 0; string < mt_conf.strings; ++string)
   {
-    for(j = 0; j < digits; ++j)
+    if (MTO.current_line->content[string][MTO.current_line->length] == '\0')
     {
-      if(i == note->string)
-      {
-        MTO.current_line->content[i][MTO.current_line->length + j] = 
-          note_chars[j];
-      }
-      else
-      {
-        MTO.current_line->content[i][MTO.current_line->length + j] = '-';
-      }
+      mt_output_spacer_line(string, note->size);
     }
   }
 
   MTO.current_line->length += note->size;
+}
+
+// Outputs a single note on a single line followed by '-' until length is met
+void mt_output_note(MtNote* note, int length)
+{
+  assert(note != NULL);
+  assert(length > 0);
+
+  char* note_chars = malloc(MT_CONFIG_MAX_FRET_DIGITS);
+  int note_digits = sprintf(note_chars, "%d", note->fret);
+
+  int pos = MTO.current_line->length;
+  int end = MTO.current_line->length + length;
+  
+  int i; 
+ 
+  // Print the note to the line
+  for (i = 0; i < note_digits; ++i)
+  {
+    MTO.current_line->content[note->string][pos] = note_chars[i];
+    ++pos;
+  }
+
+  // Print the note's modifier, if present
+
+  // If length is longer than the note, fill in the rest with `-`
+  while (pos < end) 
+  {
+    MTO.current_line->content[note->string][pos] = '-';
+    ++pos;
+  }
+
   free(note_chars);
+}
+
+void mt_output_spacer_line(int string, int length)
+{
+  assert(length > 0);
+
+  int pos = MTO.current_line->length;
+  int end = MTO.current_line->length + length;
+
+  while (pos < end)
+  {
+    MTO.current_line->content[string][pos] = '-';
+    ++pos;
+  }
 }
 
 void mt_output_chord(MtChord* chord)
 {
+  mt_queue_each_val(chord->notes, {
+    mt_output_note(val, chord->size);
+  });
 
+  int string;
+  for (string = 0; string < mt_conf.strings; ++string)
+  {
+    if (MTO.current_line->content[string][MTO.current_line->length] == '\0')
+    {
+      mt_output_spacer_line(string, chord->size);
+    }
+  }
+
+  MTO.current_line->length += chord->size;
 }
 
 void mt_output_sequence(MtSequence* sequence)
 {
-
+  
 }
 
 void mt_output_transition(MtTransition* transition)
@@ -207,6 +274,11 @@ MtOutputLine* mt_output_line_new()
   assert(line != NULL);
 
   line->length = 0;
+  
+  // Initialize all string arrays to be '\0'
+  int string;
+  for (string = 0; string < mt_conf.strings; ++string)
+    memset(line->content[string], '\0', mt_conf.max_line_length);
 
   return line;
 }

@@ -7,13 +7,6 @@
  * MtQueueNode
  */
 
-typedef struct MtQueueNode
-{
-  void* value;
-  struct MtQueueNode* next; 
-
-} MtQueueNode;
-
 // Creates a new node
 MtQueueNode* mt_queue_node_new(void* value);
 

@@ -26,8 +26,12 @@
   
   // Parser locals
   MtQueue* current_section_construction;
+  MtQueue* current_chord_construction;
+  MtQueue* current_chord_note_group;
 
   // TODO: REMOVE, temporary to make compiler happy
+  // This should be part of the scope stack in the runtime
+  // MTR.scopes => scopes stack
   int last_note_string;
 
 %}
@@ -43,8 +47,9 @@
 {
   int           integer;
   MtString*     string;
-  MtObject*     object;
   MtNote*       note;
+  MtChord*      chord;
+  MtObject*     object;
 }
 
 
@@ -83,6 +88,8 @@
 %token MT_T_HAMMER_ON             "h"
 %token MT_T_PULL_OFF              "p"
 
+%token MT_T_CONFIG_SEPARATOR      "config separator"
+
 %token <string>  MT_T_ID          "identifier"
 %token <integer> MT_T_NUMBER      "number"
 
@@ -94,6 +101,7 @@
 
 %type <integer> transition optional_modifier multiplier
 %type <note>    note
+%type <chord>   inline_chord
 %type <object>  object
 
 /*
@@ -103,10 +111,14 @@
 // For now, there is no need for precedence.
 // If there ever is, the rules would go here.
 
+/*
+  Initialization
+*/
 
 %initial-action 
 {
-  // Pre parse initializations go here
+  // For now there is no need for pre-parse initializations
+  // If there ever is, they would go here
 }
 
 /*
@@ -116,7 +128,19 @@
 %%
 
 tab:
-  section_list
+  optional_config_header section_list
+
+optional_config_header:
+  MT_T_CONFIG_SEPARATOR config_lines MT_T_CONFIG_SEPARATOR
+  |empty
+
+config_lines:
+  config_lines config_line
+  | empty
+
+/* Note this is currently stubbed, not functional yet */
+config_line:
+  MT_T_ID MT_T_NEWLINE
 
 section_list:
   section_list section
@@ -183,11 +207,8 @@ object_group:
 
   | object multiplier
   {
-    int i; 
-    for(i = 0; i < $2; ++i)
-    {
-      mt_queue_enqueue(current_section_construction, $1);
-    }
+    int i; for(i = 0; i < $2; ++i)
+    { mt_queue_enqueue(current_section_construction, $1); }
   }
 
 transition_chain:
@@ -212,8 +233,8 @@ object:
   }
   | inline_chord optional_modifier
   {
-    // Stubbed as rest to get rid of type clashes
-    $$ = mt_object_new_rest();
+    mt_chord_set_modifier($1, $2);
+    $$ = mt_object_new(MT_OBJ_CHORD, $1);
   }
   | inline_sequence optional_modifier
   {
@@ -244,18 +265,47 @@ note:
 
 /* CHORDS */
 inline_chord:
-  MT_T_LEFT_PAREN chord_note_list MT_T_RIGHT_PAREN
+  MT_T_LEFT_PAREN 
+  { current_chord_construction = mt_queue_new(); }
+  chord_note_list MT_T_RIGHT_PAREN
+  { $$ = mt_chord_new(current_chord_construction); }
  
 chord_note_list:
   chord_note_list chord_note
   | chord_note
  
 chord_note:
-  string_list MT_T_COLON MT_T_NUMBER
+  { current_chord_note_group = mt_queue_new(); }
+  chord_note_string_list MT_T_COLON chord_fret
+  {
+    mt_queue_dequeue_each_val(current_chord_note_group, {
+      mt_queue_enqueue(current_chord_construction, val); 
+    });
+
+    mt_queue_free(current_chord_note_group);
+  }
  
-string_list:
-  string_list MT_T_COMMA MT_T_NUMBER
-  | MT_T_NUMBER
+chord_note_string_list:
+  chord_note_string_list MT_T_COMMA chord_note_string
+  | chord_note_string
+
+chord_note_string:
+  MT_T_NUMBER 
+    { mt_queue_enqueue(current_chord_note_group, mt_note_new_without_fret($1)); }
+
+chord_fret:
+  MT_T_NUMBER
+  {
+    mt_queue_each_val(current_chord_note_group, {
+      mt_note_set_fret(val, $1);
+    });
+  }
+  | MT_T_MUTE
+  {
+    mt_queue_each_val(current_chord_note_group, {
+      mt_note_set_muted(val);
+    });
+  }
 
 /* SEQUENCES */
 inline_sequence:

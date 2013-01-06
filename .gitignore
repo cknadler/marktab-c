@@ -16,7 +16,7 @@ config.status
 .deps/
 .libs/
 
-# Autotools needed files, but can be built on each system
+# Autotools generated files, can be built on each system
 Makefile.in
 src/Makefile.in
 libtool
@@ -28,6 +28,7 @@ missing
 depcomp
 ylwrap
 configure
+compile
 
 # Flex and Bison generated files
 src/y.tab.h

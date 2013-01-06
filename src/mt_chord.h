@@ -8,10 +8,16 @@ typedef struct MtChord
 {
   MtQueue* notes;
   MtModifierType modifier;
+  int size;
 } MtChord;
 
-MtChord* mt_chord_new(MtQueue* notes, MtModifierType modifier);
+// Constructors
+MtChord* mt_chord_new(MtQueue* notes);
 
+// Setters
+void mt_chord_set_modifier(MtChord* chord, MtModifierType type);
+
+// Destructors
 void mt_chord_free(MtChord* chord);
 
-#endif
+#endif // MT_CHORD_H

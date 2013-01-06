@@ -22,6 +22,7 @@ MtOutput MTO;
 // Initialize the marktab output
 void mt_output_init();
 
+// Shutdown the output and deallocate all associated memory
 void mt_output_shutdown();
 
 // Print the tab to stdout
