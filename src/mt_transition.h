@@ -2,6 +2,7 @@
 #define MT_TRANSITION_H
 
 #include "mt_type.h"
+#include "mt_config.h"
 
 struct MtObject;
 
@@ -18,11 +19,11 @@ typedef enum MtTransitionType
 typedef struct MtTransition
 {
   MtTransitionType type;
-  struct MtObject* destination;
+  char content[MT_CONFIG_MAX_STRINGS];
 } MtTransition;
 
 MtTransition* mt_transition_new(MtTransitionType type, struct MtObject* destination);
 
 void mt_transition_free(MtTransition* transition);
 
-#endif
+#endif // MT_TRANSITION_H

@@ -238,6 +238,8 @@ void mt_output_spacer_line(int string, int length)
 
 void mt_output_chord(MtChord* chord)
 {
+  assert(chord != NULL);
+
   mt_queue_each_val(chord->notes, {
     mt_output_note(val, chord->size);
   });
@@ -261,7 +263,24 @@ void mt_output_sequence(MtSequence* sequence)
 
 void mt_output_transition(MtTransition* transition)
 {
+  assert(transition != NULL); 
 
+  int pos = MTO.current_line->length;
+
+  int string;
+  for (string = 0; string < mt_conf.strings; ++string)
+  {
+    if (transition->content[string] != '\0')
+    {
+      MTO.current_line->content[string][pos] = transition->content[string];
+    }
+    else
+    {
+      MTO.current_line->content[string][pos] = '-';
+    }
+  }
+
+  MTO.current_line->length += 1;
 }
 
 

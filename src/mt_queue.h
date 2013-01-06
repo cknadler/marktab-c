@@ -36,10 +36,10 @@ void mt_queue_free(MtQueue* queue);
 // Note that this doesn't dequeue the values
 #define mt_queue_each_val(self, block) { \
     MtQueueNode* node; \
-    void* val; \
     int queue_pos; \
+    void* val; \
     for (queue_pos = 0; queue_pos < self->size; ++queue_pos) { \
-      if (queue_pos == 0) {node = self->front;} else {node = node->next;} \
+      if (queue_pos == 0) node = self->front; else node = node->next; \
       val = node->value; \
       block; \
     } \
@@ -52,7 +52,7 @@ void mt_queue_free(MtQueue* queue);
     while (self->size > 0) { \
       val = mt_queue_dequeue(self); \
       block; \
-    }\
-  }\
+    } \
+  } \
 
 #endif // MT_QUEUE_H
