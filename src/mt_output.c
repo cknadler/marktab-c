@@ -211,14 +211,10 @@ void mt_output_note(MtNote* note, int length)
   }
 
   // Print the note's modifier, if present
-  char modifier;
+  char modifier = '\0';
 
   switch (note->modifier)
   {
-    case MT_MODIFIER_NONE:
-      modifier = '\0';
-      break;
-
     case MT_MODIFIER_PALM_MUTE:
       modifier = 'm';
       break;
@@ -229,6 +225,9 @@ void mt_output_note(MtNote* note, int length)
 
     case MT_MODIFIER_VIBRATO:
       modifier = '~';
+      break;
+
+    default:
       break;
   }
 
