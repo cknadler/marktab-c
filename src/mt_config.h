@@ -8,7 +8,7 @@
 // If the output implementation changes, this could also change
 #define MT_CONFIG_MAX_LINE_LENGTH 255
 
-// If you are playing a guitar with over 999 frets...marktab is not for you
+// If you are playing a guitar with over 99 frets...marktab is not for you
 #define MT_CONFIG_MAX_FRET_DIGITS 3
 
 typedef struct MtConfig

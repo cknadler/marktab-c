@@ -211,6 +211,32 @@ void mt_output_note(MtNote* note, int length)
   }
 
   // Print the note's modifier, if present
+  char modifier;
+
+  switch (note->modifier)
+  {
+    case MT_MODIFIER_NONE:
+      modifier = '\0';
+      break;
+
+    case MT_MODIFIER_PALM_MUTE:
+      modifier = 'm';
+      break;
+
+    case MT_MODIFIER_HARMONIC:
+      modifier = '*';
+      break;
+
+    case MT_MODIFIER_VIBRATO:
+      modifier = '~';
+      break;
+  }
+
+  if (modifier != '\0')
+  {
+    MTO.current_line->content[note->string][pos] = modifier;
+    ++pos;
+  }
 
   // If length is longer than the note, fill in the rest with `-`
   while (pos < end) 
