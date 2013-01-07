@@ -88,7 +88,6 @@ void mt_output_generate_tab_section(MtQueue* section)
   {
     MtObject* object = mt_queue_dequeue(section);
     mt_output_object(object);
-    mt_output_spacer();
   }
 
   // Output section footer
@@ -145,16 +144,19 @@ void mt_output_object(MtObject* object)
     case MT_OBJ_NOTE:
       // TODO: check to see if output is possible
       mt_output_note_block(object->as.note);
+      mt_output_spacer();
       break;
 
     case MT_OBJ_CHORD:
       // TODO: check to see if output is possible
       mt_output_chord(object->as.chord);
+      mt_output_spacer();
       break;
 
     case MT_OBJ_TRANSITION:
       // TODO: check to see if output is possible
       mt_output_transition(object->as.transition);
+      mt_output_spacer();
       break;
 
     case MT_OBJ_SEQUENCE:
@@ -163,6 +165,7 @@ void mt_output_object(MtObject* object)
 
     case MT_OBJ_REST:
       // TODO: check to see if output is possible
+      mt_output_spacer();
       mt_output_spacer();
       break;
 
@@ -283,7 +286,9 @@ void mt_output_chord(MtChord* chord)
 
 void mt_output_sequence(MtSequence* sequence)
 {
-  
+  mt_queue_each_val(sequence->objects, {
+    mt_output_object(val);
+  });
 }
 
 void mt_output_transition(MtTransition* transition)

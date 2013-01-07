@@ -1,24 +1,19 @@
 #include "mt_queue.h"
 
 #include <assert.h>
-#include "mt_alloc.h"
+#include <stdlib.h>
 
 /*
  * MtQueueNode
  */
 
-// Creates a new node
-MtQueueNode* mt_queue_node_new(void* value);
-
-// Frees the node and all associated resources
-void mt_queue_node_free(MtQueueNode* node);
-
 MtQueueNode* mt_queue_node_new(void* value)
 {
-  MtQueueNode* node = mt_alloc_object(MtQueueNode);  
+  MtQueueNode* node = (MtQueueNode *) malloc(sizeof(MtQueueNode));  
   assert(node != NULL);
 
   node->value = value;
+  node->next = NULL;
 
   return node;
 }
@@ -30,7 +25,7 @@ void mt_queue_node_free(MtQueueNode* node)
   node->value = NULL;
   node->next = NULL;
 
-  mt_free_object(node);
+  free(node);
 }
 
 
@@ -40,7 +35,7 @@ void mt_queue_node_free(MtQueueNode* node)
 
 MtQueue* mt_queue_new()
 {
-  MtQueue* queue = mt_alloc_object(MtQueue);
+  MtQueue* queue = (MtQueue *) malloc(sizeof(MtQueue));
   assert(queue != NULL);
 
   queue->size = 0;
@@ -53,18 +48,19 @@ MtQueue* mt_queue_new()
 void mt_queue_enqueue(MtQueue* queue, void* value)
 {
   assert(queue != NULL);
+  assert(value != NULL);
   
-  MtQueueNode* new_node = mt_queue_node_new(value);
+  MtQueueNode* node = mt_queue_node_new(value);
 
   if (queue->size > 0)
   {
-    queue->back->next = new_node;
-    queue->back = new_node;
+    queue->back->next = node;
+    queue->back = node;
   } 
   else 
   {
-    queue->front = new_node;
-    queue->back = new_node;
+    queue->front = node;
+    queue->back = node;
   }
 
   queue->size++;
@@ -107,5 +103,5 @@ void mt_queue_free(MtQueue* queue)
 {
   assert(queue != NULL);
   mt_queue_clear(queue);
-  mt_free_object(queue);
+  free(queue);
 }

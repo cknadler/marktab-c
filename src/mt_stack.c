@@ -61,7 +61,17 @@ void* mt_stack_pop(MtStack* stack)
     mt_stack_node_free(node);
   }
 
+  assert(data != NULL);
+
   return data;
+}
+
+void* mt_stack_top(MtStack* stack)
+{
+  assert(stack != NULL);
+  assert(stack->head->value != NULL);
+
+  return stack->head->value;
 }
 
 void mt_stack_clear(MtStack* stack)

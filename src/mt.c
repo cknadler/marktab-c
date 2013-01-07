@@ -39,11 +39,9 @@ int main(int argc, const char* argv[])
     }
   }
 
-  // Initailze the marktab runtime
+  // Initailze the marktab runtime and config
   mtr_init();
   mt_config_init();
-
-  // Initialize parser globals
 
   // Parse the input
   yyparse();
@@ -51,7 +49,7 @@ int main(int argc, const char* argv[])
   // Output
   mt_output(MTR.sections);
 
-  // Dealloc parser globals
+  // Destroy config and runtime
 
   if (yyin != NULL)
     fclose(yyin);

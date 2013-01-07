@@ -10,8 +10,7 @@ typedef struct MtSequence
   MtQueue* objects;
 } MtSequence;
 
-MtSequence* mt_sequence_new();
-void mt_sequence_add_object(MtSequence* sequence, void* object);
+MtSequence* mt_sequence_new(MtQueue* objects);
 void mt_sequence_set_modifier(MtSequence* sequence, MtModifierType modifier);
 
 void mt_sequence_free(MtSequence* sequence);

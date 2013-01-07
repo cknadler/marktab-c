@@ -22,17 +22,9 @@
   extern int yylex();
   extern int yyerror(char const*);
 
-  // Parser globals
-  
   // Parser locals
-  MtQueue* current_section_construction;
   MtQueue* current_chord_construction;
   MtQueue* current_chord_note_group;
-
-  // TODO: REMOVE, temporary to make compiler happy
-  // This should be part of the scope stack in the runtime
-  // MTR.scopes => scopes stack
-  int last_note_string;
 
 %}
 
@@ -50,6 +42,7 @@
   MtNote*       note;
   MtChord*      chord;
   MtObject*     object;
+  MtSequence*   sequence;
 }
 
 
@@ -99,10 +92,11 @@
   Type declaration
 */
 
-%type <integer> transition optional_modifier multiplier
-%type <note>    note
-%type <chord>   inline_chord
-%type <object>  object
+%type <integer>  transition optional_modifier multiplier
+%type <note>     note
+%type <chord>    inline_chord
+%type <sequence> inline_sequence
+%type <object>   object
 
 /*
   Precedence
@@ -147,14 +141,11 @@ section_list:
   | section
 
 section:
-  {
-    // Create a new section queue
-    current_section_construction = mt_queue_new();
-  }
+  { mtr_scope_push(); }
   tab_line_list
   {
-    // Queue the now completed section into the runtime section queue
-    mt_queue_enqueue(MTR.sections, current_section_construction);
+    mtr_section_push();
+    mtr_scope_pop();
   }
   section_break
   | section_break
@@ -193,22 +184,19 @@ object_group_list:
   | object_group
 
 object_group:
-  object 
-  { 
-    mt_queue_enqueue(current_section_construction, $1); 
-  }
+  object { mtr_current_object_queue_enqueue($1); }
 
   | object
   {
     // TODO: Emit error if $1 is not a note or chord
-    mt_queue_enqueue(current_section_construction, $1);
+    mtr_current_object_queue_enqueue($1); 
   } 
   transition_chain
 
   | object multiplier
   {
     int i; for(i = 0; i < $2; ++i)
-    { mt_queue_enqueue(current_section_construction, $1); }
+    { mtr_current_object_queue_enqueue($1); }
   }
 
 transition_chain:
@@ -221,8 +209,8 @@ transition_group:
     // TODO: Emit error if $2 is not a note or chord
     MtTransition* transition = mt_transition_new($1, $2);
     MtObject* transition_object = mt_object_new(MT_OBJ_TRANSITION, transition);
-    mt_queue_enqueue(current_section_construction, transition_object);
-    mt_queue_enqueue(current_section_construction, $2);
+    mtr_current_object_queue_enqueue(transition_object); 
+    mtr_current_object_queue_enqueue($2); 
   }
 
 object:
@@ -238,32 +226,39 @@ object:
   }
   | inline_sequence optional_modifier
   {
-    // Stubbed as rest to get rid of type clashes
-    $$ = mt_object_new_rest();
+    mt_sequence_set_modifier($1, $2);
+    $$ = mt_object_new(MT_OBJ_SEQUENCE, $1);
   }
   | MT_T_ID optional_modifier
   {
     // Stubbed as rest to get rid of type clashes
     $$ = mt_object_new_rest();
   }
-  | MT_T_REST { $$ = mt_object_new_rest(); }
+  | MT_T_REST
+  { 
+    $$ = mt_object_new_rest();
+  }
 
-/* NOTES */
+/* 
+  NOTES
+*/
 note:
   MT_T_NUMBER MT_T_COLON MT_T_NUMBER
   {
-    last_note_string = $1;
+    mtr_set_last_note_string($1);
     $$ = mt_note_new($1, $3);
   }
   | MT_T_NUMBER MT_T_COLON MT_T_MUTE
   {
-    last_note_string = $1;
+    mtr_set_last_note_string($1);
     $$ = mt_note_new_muted($1);
   }
-  | MT_T_NUMBER { $$ = mt_note_new(last_note_string, $1); }
-  | MT_T_MUTE { $$ = mt_note_new_muted(last_note_string); }
+  | MT_T_NUMBER { $$ = mt_note_new(mtr_last_note_string(), $1); }
+  | MT_T_MUTE { $$ = mt_note_new_muted(mtr_last_note_string()); }
 
-/* CHORDS */
+/* 
+  CHORDS 
+*/
 inline_chord:
   MT_T_LEFT_PAREN 
   { current_chord_construction = mt_queue_new(); }
@@ -307,11 +302,24 @@ chord_fret:
     });
   }
 
-/* SEQUENCES */
+/*
+  SEQUENCES 
+*/
 inline_sequence:
-  MT_T_LEFT_BRACKET object_group_list MT_T_RIGHT_BRACKET
+  MT_T_LEFT_BRACKET
+  {
+    mtr_scope_push();
+  }
+  object_group_list MT_T_RIGHT_BRACKET
+  {
+    MtSequence* sequence = mt_sequence_new(mtr_current_object_queue());
+    mtr_scope_pop();
+    $$ = sequence;
+  }
 
-/* TRANSITIONS */
+/*
+  TRANSITIONS
+*/
 transition:
   MT_T_BEND { $$ = MT_TRANSITION_BEND; }
   | MT_T_SLIDE_UP { $$ = MT_TRANSITION_SLIDE_UP; }
@@ -319,7 +327,9 @@ transition:
   | MT_T_HAMMER_ON { $$ = MT_TRANSITION_HAMMER_ON; }
   | MT_T_PULL_OFF { $$ = MT_TRANSITION_PULL_OFF; }
 
-/* DEFINITIONS */
+/*
+  DEFINITIONS
+*/
 definition:
   chord_definition 
   | sequence_definition
@@ -330,7 +340,9 @@ chord_definition:
 sequence_definition:
   MT_T_ID MT_T_COLON inline_sequence
  
-/* OPTIONAL MODIFIERS AND MULTIPLIERS */
+/*
+  OPTIONAL MODIFIERS AND MULTIPLIERS
+*/
 multiplier:
   MT_T_MULTIPLY MT_T_NUMBER { $$ = $2; }
  
