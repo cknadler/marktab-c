@@ -130,7 +130,6 @@ Modifiers and transitions modify notes.
 #### modifiers
 
   * palm mute: `m`
-  * bend: `b`
   * harmonic: `*`
   * vibrato: `~`
 
@@ -142,6 +141,8 @@ Modifiers are applied to a single note or chord.
   * slide down: `\`
   * hammer on: `h`
   * pull off: `p`
+  * bend: `b`
+
 
 Transitions link two notes or chords together.
 
