@@ -4,26 +4,22 @@
 #include "mt_queue.h"
 #include "mt_config.h"
 
+// A line of tab output
 typedef struct MtOutputLine
 {
   int length;
   char content[MT_CONFIG_MAX_STRINGS][MT_CONFIG_MAX_LINE_LENGTH];
 } MtOutputLine;
 
+// A container for output lines
 typedef struct MtOutput
 {
   MtOutputLine* current_line;
-  MtQueue* tab_lines;
+  MtQueue* line_buffer;
 } MtOutput;
 
 // Define a single MtOutput
 MtOutput MTO;
-
-// Initialize the marktab output
-void mt_output_init();
-
-// Shutdown the output and deallocate all associated memory
-void mt_output_shutdown();
 
 // Print the tab to stdout
 void mt_output(MtQueue* sections);
