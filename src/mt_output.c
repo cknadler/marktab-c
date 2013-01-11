@@ -113,7 +113,6 @@ static void
 mt_output_section(MtQueue* section)
 {
   MTO.current_line = mt_output_line_new();
-
   mt_output_header();
 
   while(section->size > 0)
@@ -122,7 +121,6 @@ mt_output_section(MtQueue* section)
     mt_output_object(object);
   }
 
-  // Output section footer
   mt_output_footer();
   mt_queue_enqueue(MTO.line_buffer, MTO.current_line);
   
@@ -176,21 +174,52 @@ mt_output_object(MtObject* object)
   switch(object->type)
   {
     case MT_OBJ_NOTE:
-      // TODO: check to see if output is possible
-      mt_output_note_block(object->as.note);
-      mt_output_spacer();
+      // Output to current line
+      if ((MTO.current_line->length + object->as.note->size + 1) <
+          mt_conf.max_line_length)
+      {
+        mt_output_note_block(object->as.note);
+        mt_output_spacer();
+      }
+      else // Make a new line, then output
+      {
+        mt_output_footer();
+        mt_queue_enqueue(MTO.line_buffer, MTO.current_line);
+        MTO.current_line = mt_output_line_new();
+        mt_output_header();
+      }
       break;
 
     case MT_OBJ_CHORD:
-      // TODO: check to see if output is possible
-      mt_output_chord(object->as.chord);
-      mt_output_spacer();
+      // Output to current line
+      if ((MTO.current_line->length + object->as.chord->size + 1) < 
+          mt_conf.max_line_length)
+      {
+        mt_output_chord(object->as.chord);
+        mt_output_spacer();
+      }
+      else // Make a new line, then output
+      {
+        mt_output_footer();
+        mt_queue_enqueue(MTO.line_buffer, MTO.current_line);
+        MTO.current_line = mt_output_line_new();
+        mt_output_header();
+      }
       break;
 
     case MT_OBJ_TRANSITION:
-      // TODO: check to see if output is possible
-      mt_output_transition(object->as.transition);
-      mt_output_spacer();
+      if ((MTO.current_line->length + 2) < mt_conf.max_line_length)
+      {
+        mt_output_transition(object->as.transition);
+        mt_output_spacer();
+      }
+      else
+      {
+        mt_output_footer();
+        mt_queue_enqueue(MTO.line_buffer, MTO.current_line);
+        MTO.current_line = mt_output_line_new();
+        mt_output_header();
+      }
       break;
 
     case MT_OBJ_SEQUENCE:
@@ -198,9 +227,18 @@ mt_output_object(MtObject* object)
       break;
 
     case MT_OBJ_REST:
-      // TODO: check to see if output is possible
-      mt_output_spacer();
-      mt_output_spacer();
+      if ((MTO.current_line->length + 2) < mt_conf.max_line_length)
+      {
+        mt_output_spacer();
+        mt_output_spacer();
+      }
+      else
+      {
+        mt_output_footer();
+        mt_queue_enqueue(MTO.line_buffer, MTO.current_line);
+        MTO.current_line = mt_output_line_new();
+        mt_output_header();
+      }
       break;
 
     default:
@@ -348,7 +386,8 @@ mt_output_transition(MtTransition* transition)
 // Public
 //
 
-void mt_output(MtQueue* sections)
+void
+mt_output(MtQueue* sections)
 {
   // Initialize the output
   mt_output_init();
@@ -361,9 +400,7 @@ void mt_output(MtQueue* sections)
     mt_output_section(section);
   }
 
-  // Output the full tab
   mt_output_print();
 
-  // shutdown the output
   mt_output_shutdown();
 }
