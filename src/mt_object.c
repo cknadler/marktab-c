@@ -29,6 +29,10 @@ MtObject* mt_object_new(MtObjectType type, void* value)
       object->as.sequence = value;
       break;
 
+    case MT_OBJ_SYMBOL:
+      object->as.symbol = value;
+      break;
+
     default:
       // MtObject should be constructed with a valid type
       assert(false);
@@ -66,6 +70,10 @@ void mt_object_free(MtObject* object)
 
     case MT_OBJ_TRANSITION:
       mt_transition_free(object->as.transition);
+      break;
+
+    case MT_OBJ_SYMBOL:
+      mt_symbol_free(object->as.symbol);
       break;
 
     default:

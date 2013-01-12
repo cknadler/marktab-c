@@ -6,6 +6,7 @@
   // External
   #include "mt_string.h"
   #include "mt_queue.h"
+  #include "mt_hash.h"
 
   // Internal
   #include "mtr.h"
@@ -15,6 +16,7 @@
   #include "mt_chord.h"
   #include "mt_transition.h"
   #include "mt_sequence.h"
+  #include "mt_symbol.h"
   #include "mt_config.h"
 
   #define YYDEBUG 0
@@ -231,8 +233,7 @@ object:
   }
   | MT_T_ID optional_modifier
   {
-    // Stubbed as rest to get rid of type clashes
-    $$ = mt_object_new_rest();
+    $$ = mt_object_new(MT_OBJ_SYMBOL, mt_symbol_new($1, $2));
   }
   | MT_T_REST
   { 
@@ -336,9 +337,23 @@ definition:
 
 chord_definition:
   MT_T_ID MT_T_COLON inline_chord
+  {
+    MtObject* value = mt_object_new(MT_OBJ_CHORD, $3);
+
+    // TODO: Check to see if key exists first
+
+    mt_hash_insert(MTR.symbol_table, $1, value);
+  }
 
 sequence_definition:
   MT_T_ID MT_T_COLON inline_sequence
+  {
+    MtObject* value = mt_object_new(MT_OBJ_SEQUENCE, $3);
+
+    // TODO: Check to see if key exists first
+
+    mt_hash_insert(MTR.symbol_table, $1, value);
+  }
  
 /*
   OPTIONAL MODIFIERS AND MULTIPLIERS

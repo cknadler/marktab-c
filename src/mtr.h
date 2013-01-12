@@ -4,6 +4,7 @@
 #include "mt_stack.h"
 #include "mt_queue.h"
 #include "mt_object.h"
+#include "mt_hash.h"
 
 typedef struct MtrScope
 {
@@ -15,6 +16,7 @@ typedef struct MtRuntime
 {
   MtStack* scopes;
   MtQueue* sections;
+  MtHash* symbol_table;
 } MtRuntime;
 
 MtRuntime MTR;

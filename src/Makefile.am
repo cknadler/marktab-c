@@ -16,6 +16,7 @@ mt_note.c \
 mt_chord.c \
 mt_transition.c \
 mt_sequence.c \
+mt_symbol.c \
 mt_queue.c \
 mtr.c \
 mt_config.c \

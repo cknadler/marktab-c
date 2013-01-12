@@ -32,6 +32,7 @@ void mtr_init()
 {
   MTR.scopes = mt_stack_new();
   MTR.sections = mt_queue_new();
+  MTR.symbol_table = mt_hash_new();
 }
 
 MtQueue* mtr_current_object_queue()
@@ -82,4 +83,5 @@ void mtr_destroy()
 {
   mtr_scope_pop();
   mt_stack_free(MTR.scopes);
+  mt_hash_free(MTR.symbol_table);
 }
