@@ -45,6 +45,9 @@ static void mt_output_note(MtNote* note, int length);
 // Add `length` number of '-' to specified column of current output line
 static void mt_output_spacer_line(int string, int length);
 
+// Break the current section line
+static void mt_output_line_break();
+
 // Add a note to the current output line
 static void mt_output_note_block(MtNote* note);
 
@@ -171,55 +174,33 @@ static void
 mt_output_object(MtObject* object)
 {
   // Depending on the type of object, call that object's output function
+  // Also, break the section line when necessary
   switch(object->type)
   {
     case MT_OBJ_NOTE:
-      // Output to current line
-      if ((MTO.current_line->length + object->as.note->size + 1) <
+      if ((MTO.current_line->length + object->as.note->size + 1) >
           mt_conf.max_line_length)
-      {
+        mt_output_line_break();
+
         mt_output_note_block(object->as.note);
         mt_output_spacer();
-      }
-      else // Make a new line, then output
-      {
-        mt_output_footer();
-        mt_queue_enqueue(MTO.line_buffer, MTO.current_line);
-        MTO.current_line = mt_output_line_new();
-        mt_output_header();
-      }
       break;
 
     case MT_OBJ_CHORD:
-      // Output to current line
-      if ((MTO.current_line->length + object->as.chord->size + 1) < 
+      if ((MTO.current_line->length + object->as.chord->size + 1) > 
           mt_conf.max_line_length)
-      {
+        mt_output_line_break();
+
         mt_output_chord(object->as.chord);
         mt_output_spacer();
-      }
-      else // Make a new line, then output
-      {
-        mt_output_footer();
-        mt_queue_enqueue(MTO.line_buffer, MTO.current_line);
-        MTO.current_line = mt_output_line_new();
-        mt_output_header();
-      }
       break;
 
     case MT_OBJ_TRANSITION:
-      if ((MTO.current_line->length + 2) < mt_conf.max_line_length)
-      {
-        mt_output_transition(object->as.transition);
-        mt_output_spacer();
-      }
-      else
-      {
-        mt_output_footer();
-        mt_queue_enqueue(MTO.line_buffer, MTO.current_line);
-        MTO.current_line = mt_output_line_new();
-        mt_output_header();
-      }
+      if ((MTO.current_line->length + 2) > mt_conf.max_line_length)
+        mt_output_line_break();
+      
+      mt_output_transition(object->as.transition);
+      mt_output_spacer();
       break;
 
     case MT_OBJ_SEQUENCE:
@@ -227,18 +208,11 @@ mt_output_object(MtObject* object)
       break;
 
     case MT_OBJ_REST:
-      if ((MTO.current_line->length + 2) < mt_conf.max_line_length)
-      {
-        mt_output_spacer();
-        mt_output_spacer();
-      }
-      else
-      {
-        mt_output_footer();
-        mt_queue_enqueue(MTO.line_buffer, MTO.current_line);
-        MTO.current_line = mt_output_line_new();
-        mt_output_header();
-      }
+      if ((MTO.current_line->length + 2) > mt_conf.max_line_length)
+        mt_output_line_break();
+
+      mt_output_spacer();
+      mt_output_spacer();
       break;
 
     default:
@@ -318,6 +292,15 @@ mt_output_spacer_line(int string, int length)
     MTO.current_line->content[string][pos] = '-';
     ++pos;
   }
+}
+
+static void
+mt_output_line_break()
+{
+  mt_output_footer();
+  mt_queue_enqueue(MTO.line_buffer, MTO.current_line);
+  MTO.current_line = mt_output_line_new();
+  mt_output_header();
 }
 
 static void
