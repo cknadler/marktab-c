@@ -8,13 +8,19 @@
 #include "mt_alloc.h"
 #include "mt_object.h"
 
+//
+// Private protos
+//
+
 // Initialize the MtOutput
 static void mt_output_init();
+
 // Free the MtOutput
 static void mt_output_shutdown();
 
 // Create a new MtOutputLine
 static MtOutputLine* mt_output_line_new();
+
 // Free an MtOutputLine
 static void mt_output_line_free();
 
@@ -60,6 +66,32 @@ static void mt_output_sequence(MtSequence* sequence);
 // Add a transition to the current output line
 static void mt_output_transition(MtTransition* transition);
 
+// 
+// Public
+//
+
+void
+mt_output(MtQueue* sections)
+{
+  // Initialize the output
+  mt_output_init();
+
+  // Iterate through every section
+  while (sections->size > 0)
+  {
+    // Generate tab for a single section
+    MtQueue* section = mt_queue_dequeue(sections);
+    mt_output_section(section);
+  }
+
+  mt_output_print();
+
+  mt_output_shutdown();
+}
+
+//
+// Private
+//
 
 static void 
 mt_output_init()
@@ -365,25 +397,4 @@ mt_output_transition(MtTransition* transition)
 }
 
 
-// 
-// Public
-//
 
-void
-mt_output(MtQueue* sections)
-{
-  // Initialize the output
-  mt_output_init();
-
-  // Iterate through every section
-  while (sections->size > 0)
-  {
-    // Generate tab for a single section
-    MtQueue* section = mt_queue_dequeue(sections);
-    mt_output_section(section);
-  }
-
-  mt_output_print();
-
-  mt_output_shutdown();
-}

@@ -11,11 +11,21 @@
 #include "mt_chord.h"
 
 // Private protos
-char mt_transition_get_char(MtTransition* transition);
-void mt_transition_set_note_string(MtTransition* transition, MtNote* note);
-void mt_transition_set_chord_strings(MtTransition* transition, MtChord* chord);
 
-MtTransition* mt_transition_new(MtTransitionType type, MtObject* destination)
+// Get the ascii character for a transition
+static char
+mt_transition_get_char(MtTransition* transition);
+
+// Set the transition character for a single note
+static void mt_transition_set_note_string(MtTransition* transition, MtNote* note);
+
+// Set the transition characters for a chord
+static void mt_transition_set_chord_strings(MtTransition* transition, MtChord* chord);
+
+// Public
+
+MtTransition*
+mt_transition_new(MtTransitionType type, MtObject* destination)
 {
   MtTransition* transition = mt_alloc_object(MtTransition);
   assert(transition != NULL);
@@ -47,7 +57,8 @@ MtTransition* mt_transition_new(MtTransitionType type, MtObject* destination)
   return transition;
 }
 
-void mt_transition_free(MtTransition* transition)
+void
+mt_transition_free(MtTransition* transition)
 {
   assert(transition != NULL);
   mt_free_object(transition);
@@ -55,7 +66,8 @@ void mt_transition_free(MtTransition* transition)
 
 // Private
 
-char mt_transition_get_char(MtTransition* transition)
+static char
+mt_transition_get_char(MtTransition* transition)
 {
   assert(transition != NULL);
 
@@ -90,7 +102,8 @@ char mt_transition_get_char(MtTransition* transition)
   return value;
 }
 
-void mt_transition_set_note_string(MtTransition* transition, MtNote* note)
+static void
+mt_transition_set_note_string(MtTransition* transition, MtNote* note)
 {
   assert(transition != NULL);
   assert(note != NULL);
@@ -100,7 +113,8 @@ void mt_transition_set_note_string(MtTransition* transition, MtNote* note)
   transition->content[note->string] = transition_char;
 }
 
-void mt_transition_set_chord_strings(MtTransition* transition, MtChord* chord)
+static void
+mt_transition_set_chord_strings(MtTransition* transition, MtChord* chord)
 {
   assert(transition != NULL);
   assert(chord != NULL);
