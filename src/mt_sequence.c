@@ -19,7 +19,7 @@ MtSequence* mt_sequence_new(MtQueue* objects)
 }
 
 // Recursively set the modifier of all contained objects
-void mt_sequence_set_modifier(MtSequence* sequence, MtModifierType modifier)
+void mt_sequence_set_modifier(MtSequence* sequence, MtModifier modifier)
 {
   if (sequence->modifier != modifier)
   {

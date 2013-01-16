@@ -27,7 +27,7 @@ MtChord* mt_chord_new(MtQueue* notes)
   return chord;
 }
 
-void mt_chord_set_modifier(MtChord* chord, MtModifierType modifier)
+void mt_chord_set_modifier(MtChord* chord, MtModifier modifier)
 {
   assert(chord != NULL);
   

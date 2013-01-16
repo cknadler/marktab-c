@@ -7,7 +7,7 @@
 typedef struct MtChord
 {
   MtQueue* notes;
-  MtModifierType modifier;
+  MtModifier modifier;
   int size;
 } MtChord;
 
@@ -15,7 +15,7 @@ typedef struct MtChord
 MtChord* mt_chord_new(MtQueue* notes);
 
 // Setters
-void mt_chord_set_modifier(MtChord* chord, MtModifierType type);
+void mt_chord_set_modifier(MtChord* chord, MtModifier type);
 
 // Destructors
 void mt_chord_free(MtChord* chord);

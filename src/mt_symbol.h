@@ -7,10 +7,10 @@
 typedef struct MtSymbol
 {
   MtString* name;
-  MtModifierType modifier;
+  MtModifier modifier;
 } MtSymbol;
 
-MtSymbol* mt_symbol_new(MtString* name, MtModifierType modifier);
+MtSymbol* mt_symbol_new(MtString* name, MtModifier modifier);
 
 void mt_symbol_free(MtSymbol* symbol);
 

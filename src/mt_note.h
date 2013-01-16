@@ -15,7 +15,7 @@ typedef struct MtNote
   MtNoteType type;
   int string;
   int fret;
-  MtModifierType modifier;
+  MtModifier modifier;
   int size;
 } MtNote;
 
@@ -25,7 +25,7 @@ MtNote* mt_note_new_muted(int string);
 MtNote* mt_note_new_without_fret(int string);
 
 // Setters
-void mt_note_set_modifier(MtNote* note, MtModifierType modifier);
+void mt_note_set_modifier(MtNote* note, MtModifier modifier);
 
 void mt_note_set_fret(MtNote* note, int fret);
 void mt_note_set_muted(MtNote* note);

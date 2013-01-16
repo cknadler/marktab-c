@@ -4,7 +4,7 @@
 
 #include "mt_alloc.h"
 
-MtSymbol* mt_symbol_new(MtString* name, MtModifierType modifier)
+MtSymbol* mt_symbol_new(MtString* name, MtModifier modifier)
 {
   MtSymbol* symbol = mt_alloc_object(MtSymbol);
   assert(symbol != NULL);

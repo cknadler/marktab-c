@@ -1,12 +1,12 @@
-#ifndef MT_TYPE_H
-#define MT_TYPE_H
+#ifndef MT_MODIFIER_H
+#define MT_MODIFIER_H
 
-typedef enum MtModifierType
+typedef enum MtModifier
 {
   MT_MODIFIER_NONE,
   MT_MODIFIER_PALM_MUTE,
   MT_MODIFIER_HARMONIC,
   MT_MODIFIER_VIBRATO
-} MtModifierType;
+} MtModifier;
 
-#endif
+#endif // MT_MODIFIER_H

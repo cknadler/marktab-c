@@ -55,7 +55,7 @@ MtNote* mt_note_new_muted(int string)
   return note;
 }
 
-void mt_note_set_modifier(MtNote* note, MtModifierType modifier)
+void mt_note_set_modifier(MtNote* note, MtModifier modifier)
 {
   assert(note != NULL);
 
