@@ -1,7 +1,7 @@
 #ifndef MT_SEQUENCE_H
 #define MT_SEQUENCE_H
 
-#include "mt_type.h"
+#include "mt_modifier.h"
 #include "mt_queue.h"
 
 typedef struct MtSequence

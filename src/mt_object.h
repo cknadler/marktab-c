@@ -1,8 +1,7 @@
 #ifndef MT_OBJECT_H
 #define MT_OBJECT_H
 
-#include "mt_type.h"
-
+#include "mt_modifier.h"
 #include "mt_note.h"
 #include "mt_chord.h"
 #include "mt_transition.h"

@@ -5,7 +5,7 @@
 #include "mt_queue.h"
 
 #include "mt_object.h"
-#include "mt_type.h"
+#include "mt_modifier.h"
 #include "mt_note.h"
 #include "mt_chord.h"
 #include "mt_transition.h"

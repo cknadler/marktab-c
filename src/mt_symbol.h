@@ -2,7 +2,7 @@
 #define MT_SYMBOL_H
 
 #include "mt_string.h"
-#include "mt_type.h"
+#include "mt_modifier.h"
 
 typedef struct MtSymbol
 {

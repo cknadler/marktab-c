@@ -1,7 +1,7 @@
 #ifndef MT_NOTE_H
 #define MT_NOTE_H
 
-#include "mt_type.h"
+#include "mt_modifier.h"
 
 typedef enum MtNoteType
 {
