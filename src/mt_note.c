@@ -58,12 +58,6 @@ MtNote* mt_note_new_muted(int string)
 void mt_note_set_modifier(MtNote* note, MtModifier modifier)
 {
   assert(note != NULL);
-
-  if((note->modifier == MT_MODIFIER_NONE) && (modifier != MT_MODIFIER_NONE))
-  {
-    note->size++;
-  }
-
   note->modifier = modifier;
 }
 

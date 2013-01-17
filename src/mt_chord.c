@@ -21,7 +21,8 @@ MtChord* mt_chord_new(MtQueue* notes)
   chord->size = 0;
   mt_queue_each_val(notes, {
     MtNote* note = (MtNote *) val;
-    if (note->size > chord->size) chord->size = note->size;
+    if (note->size > chord->size)
+      chord->size = note->size;
   });
 
   return chord;
@@ -30,18 +31,6 @@ MtChord* mt_chord_new(MtQueue* notes)
 void mt_chord_set_modifier(MtChord* chord, MtModifier modifier)
 {
   assert(chord != NULL);
-  
-  if((chord->modifier == MT_MODIFIER_NONE) && (modifier != MT_MODIFIER_NONE))
-  {
-    chord->size++;
-  }
-
-  // Set the modifier of all contained notes
-  mt_queue_each_val(chord->notes, {
-    MtNote* note = (MtNote *) val;
-    mt_note_set_modifier(note, modifier); 
-  });
-
   chord->modifier = modifier;
 }
 

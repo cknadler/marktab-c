@@ -46,7 +46,7 @@ static void mt_output_object(MtObject* object);
 // Add a single note to the current output line on one row
 // The note is followed by '-' until length is met
 // This is used for chord and note output
-static void mt_output_note(MtNote* note, int length);
+static void mt_output_note_line(MtNote* note, int length);
 
 // Add `length` number of '-' to specified column of current output line
 static void mt_output_spacer_line(int string, int length);
@@ -55,13 +55,13 @@ static void mt_output_spacer_line(int string, int length);
 static void mt_output_line_break();
 
 // Add a note to the current output line
-static void mt_output_note_block(MtNote* note);
+static void mt_output_note(MtNote* note, MtModifier override);
 
 // Add a chord to the current output line
-static void mt_output_chord(MtChord* chord);
+static void mt_output_chord(MtChord* chord, MtModifier override);
 
 // Add a sequence to the current output line
-static void mt_output_sequence(MtSequence* sequence);
+static void mt_output_sequence(MtSequence* sequence, MtModifier override);
 
 // Add a transition to the current output line
 static void mt_output_transition(MtTransition* transition);
@@ -214,7 +214,7 @@ mt_output_object(MtObject* object)
           mt_conf.max_line_length)
         mt_output_line_break();
 
-        mt_output_note_block(object->as.note);
+        mt_output_note(object->as.note, MT_MODIFIER_NONE);
         mt_output_spacer();
       break;
 
@@ -223,7 +223,7 @@ mt_output_object(MtObject* object)
           mt_conf.max_line_length)
         mt_output_line_break();
 
-        mt_output_chord(object->as.chord);
+        mt_output_chord(object->as.chord, MT_MODIFIER_NONE);
         mt_output_spacer();
       break;
 
@@ -236,7 +236,7 @@ mt_output_object(MtObject* object)
       break;
 
     case MT_OBJ_SEQUENCE:
-      mt_output_sequence(object->as.sequence);
+      mt_output_sequence(object->as.sequence, MT_MODIFIER_NONE);
       break;
 
     case MT_OBJ_REST:
@@ -254,7 +254,7 @@ mt_output_object(MtObject* object)
 }
 
 static void
-mt_output_note(MtNote* note, int length)
+mt_output_note_line(MtNote* note, int length)
 {
   assert(note != NULL);
   assert(length > 0);
@@ -336,9 +336,9 @@ mt_output_line_break()
 }
 
 static void
-mt_output_note_block(MtNote* note)
+mt_output_note(MtNote* note, MtModifier override)
 {
-  mt_output_note(note, note->size);
+  mt_output_note_line(note, note->size);
 
   int string;
   for (string = 0; string < mt_conf.strings; ++string)
@@ -351,12 +351,12 @@ mt_output_note_block(MtNote* note)
 }
 
 static void
-mt_output_chord(MtChord* chord)
+mt_output_chord(MtChord* chord, MtModifier override)
 {
   assert(chord != NULL);
 
   mt_queue_each_val(chord->notes, {
-    mt_output_note(val, chord->size);
+    mt_output_note_line(val, chord->size);
   });
 
   int string;
@@ -370,7 +370,7 @@ mt_output_chord(MtChord* chord)
 }
 
 static void
-mt_output_sequence(MtSequence* sequence)
+mt_output_sequence(MtSequence* sequence, MtModifier override)
 {
   mt_queue_each_val(sequence->objects, {
     mt_output_object(val);
