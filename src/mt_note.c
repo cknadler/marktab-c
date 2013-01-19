@@ -48,7 +48,7 @@ MtNote* mt_note_new_muted(int string)
 
   note->type = MT_NOTE_MUTE;
 
-  note->string = string;
+  note->string = string - 1;
 
   note->size = 1;
 
