@@ -254,17 +254,17 @@ mt_output_note_line(MtNote* note, int length, MtModifier override)
   assert(length > 0);
 
   char* note_chars = malloc(MT_CONFIG_MAX_FRET_DIGITS);
-  int note_digits;
+  int note_length;
   
   // Check for regular note or muted
   if (note->type == MT_NOTE_NOTE)
   {
-    note_digits = sprintf(note_chars, "%d", note->fret);
+    note_length = sprintf(note_chars, "%d", note->fret);
   }
   else
   {
     *note_chars = 'x';
-    note_digits = 1;
+    note_length = 1;
   }
 
   int pos = MTO.current_line->length;
@@ -272,7 +272,7 @@ mt_output_note_line(MtNote* note, int length, MtModifier override)
   
   // Print the note to the line
   int i; 
-  for (i = 0; i < note_digits; ++i)
+  for (i = 0; i < note_length; ++i)
   {
     MTO.current_line->content[note->string][pos] = note_chars[i];
     ++pos;
