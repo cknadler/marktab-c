@@ -7,6 +7,8 @@
 
 #include "mt_alloc.h"
 #include "mt_object.h"
+#include "mtr.h"
+#include "mt_hash.h"
 
 //
 // Private protos
@@ -41,12 +43,12 @@ static void mt_output_spacer();
 
 // Add an object to the current output line
 // The object can be a note, chord, sequence or transition
-static void mt_output_object(MtObject* object);
+static void mt_output_object(MtObject* object, MtModifier override);
 
 // Add a single note to the current output line on one row
 // The note is followed by '-' until length is met
 // This is used for chord and note output
-static void mt_output_note_line(MtNote* note, int length);
+static void mt_output_note_line(MtNote* note, int length, MtModifier override);
 
 // Add `length` number of '-' to specified column of current output line
 static void mt_output_spacer_line(int string, int length);
@@ -66,6 +68,9 @@ static void mt_output_sequence(MtSequence* sequence, MtModifier override);
 // Add a transition to the current output line
 static void mt_output_transition(MtTransition* transition);
 
+// Output the contents of a symbol to the current output line
+static void mt_output_symbol(MtSymbol* symbol, MtModifier override);
+
 // 
 // Public
 //
@@ -84,8 +89,8 @@ mt_output(MtQueue* sections)
     mt_output_section(section);
   }
 
+  // Print the generated output
   mt_output_print();
-
   mt_output_shutdown();
 }
 
@@ -153,7 +158,7 @@ mt_output_section(MtQueue* section)
   while(section->size > 0)
   {
     MtObject* object = mt_queue_dequeue(section);
-    mt_output_object(object);
+    mt_output_object(object, MT_MODIFIER_NONE);
   }
 
   mt_output_footer();
@@ -203,40 +208,25 @@ mt_output_spacer()
 }
 
 static void
-mt_output_object(MtObject* object)
+mt_output_object(MtObject* object, MtModifier override)
 {
   // Depending on the type of object, call that object's output function
-  // Also, break the section line when necessary
   switch(object->type)
   {
     case MT_OBJ_NOTE:
-      if ((MTO.current_line->length + object->as.note->size + 1) >
-          mt_conf.max_line_length)
-        mt_output_line_break();
-
-        mt_output_note(object->as.note, MT_MODIFIER_NONE);
-        mt_output_spacer();
+      mt_output_note(object->as.note, override);
       break;
 
     case MT_OBJ_CHORD:
-      if ((MTO.current_line->length + object->as.chord->size + 1) > 
-          mt_conf.max_line_length)
-        mt_output_line_break();
-
-        mt_output_chord(object->as.chord, MT_MODIFIER_NONE);
-        mt_output_spacer();
+      mt_output_chord(object->as.chord, override);
       break;
 
     case MT_OBJ_TRANSITION:
-      if ((MTO.current_line->length + 2) > mt_conf.max_line_length)
-        mt_output_line_break();
-      
       mt_output_transition(object->as.transition);
-      mt_output_spacer();
       break;
 
     case MT_OBJ_SEQUENCE:
-      mt_output_sequence(object->as.sequence, MT_MODIFIER_NONE);
+      mt_output_sequence(object->as.sequence, override);
       break;
 
     case MT_OBJ_REST:
@@ -247,6 +237,10 @@ mt_output_object(MtObject* object)
       mt_output_spacer();
       break;
 
+    case MT_OBJ_SYMBOL:
+      mt_output_symbol(object->as.symbol, override);
+      break;
+      
     default:
       assert(false);
       break;
@@ -254,7 +248,7 @@ mt_output_object(MtObject* object)
 }
 
 static void
-mt_output_note_line(MtNote* note, int length)
+mt_output_note_line(MtNote* note, int length, MtModifier override)
 {
   assert(note != NULL);
   assert(length > 0);
@@ -265,9 +259,8 @@ mt_output_note_line(MtNote* note, int length)
   int pos = MTO.current_line->length;
   int end = MTO.current_line->length + length;
   
-  int i; 
- 
   // Print the note to the line
+  int i; 
   for (i = 0; i < note_digits; ++i)
   {
     MTO.current_line->content[note->string][pos] = note_chars[i];
@@ -338,16 +331,36 @@ mt_output_line_break()
 static void
 mt_output_note(MtNote* note, MtModifier override)
 {
-  mt_output_note_line(note, note->size);
+  assert(note != NULL);
+
+  // Determine the modifier to apply
+  MtModifier mod = note->modifier;
+
+  if (override != MT_MODIFIER_NONE)
+    mod = override;
+
+  // Calculate chord size (including optional modifier)
+  int size = note->size;
+
+  if (mod != MT_MODIFIER_NONE)
+    ++size;
+
+  // Break line if necessary is necessary
+  if ((MTO.current_line->length + size + 1) > mt_conf.max_line_length)
+    mt_output_line_break();
+
+  // Output the note line and fill in blanks
+  mt_output_note_line(note, size, mod);
 
   int string;
   for (string = 0; string < mt_conf.strings; ++string)
   {
     if (MTO.current_line->content[string][MTO.current_line->length] == '\0')
-      mt_output_spacer_line(string, note->size);
+      mt_output_spacer_line(string, size);
   }
 
-  MTO.current_line->length += note->size;
+  MTO.current_line->length += size;
+  mt_output_spacer();
 }
 
 static void
@@ -355,46 +368,195 @@ mt_output_chord(MtChord* chord, MtModifier override)
 {
   assert(chord != NULL);
 
+  // Determine the modifier to apply
+  MtModifier mod = chord->modifier;
+
+  if (override != MT_MODIFIER_NONE)
+    mod = override;
+
+  // Calculate chord size (including optional modifier)
+  int size = chord->size;
+
+  if (mod != MT_MODIFIER_NONE)
+    ++size;
+
+  // Check if a line break is necessary
+  if ((MTO.current_line->length + size + 1) > mt_conf.max_line_length)
+    mt_output_line_break();
+
+  // Ouput each note in the chord
   mt_queue_each_val(chord->notes, {
-    mt_output_note_line(val, chord->size);
+    mt_output_note_line(val, size, mod);
   });
 
+  // Fill all blank lines (where notes aren't present)
   int string;
   for (string = 0; string < mt_conf.strings; ++string)
   {
     if (MTO.current_line->content[string][MTO.current_line->length] == '\0')
-      mt_output_spacer_line(string, chord->size);
+      mt_output_spacer_line(string, size);
   }
 
-  MTO.current_line->length += chord->size;
+  MTO.current_line->length += size;
+  mt_output_spacer();
 }
 
 static void
 mt_output_sequence(MtSequence* sequence, MtModifier override)
 {
-  mt_queue_each_val(sequence->objects, {
-    mt_output_object(val);
-  });
-}
+  assert(sequence != NULL);
 
+  // Determine modifier to apply
+  MtModifier mod = sequence->modifier;
+
+  if (override != MT_MODIFIER_NONE)
+    mod = override;
+
+  // Output each sub-object in the sequence
+  mt_queue_each_val(sequence->objects, {
+    mt_output_object(val, mod);
+  });
+} 
 static void
 mt_output_transition(MtTransition* transition)
 {
   assert(transition != NULL); 
 
-  int pos = MTO.current_line->length;
+  // TODO: Refactor
+  // Shouldn't always be max
+  // Initialize transition content
+  char content[MT_CONFIG_MAX_STRINGS];
+  memset(content, '\0', mt_conf.strings);
 
+  // Initalize the transition value
+  char value;
+  switch (transition->type)
+  {
+    case MT_TRANSITION_BEND:
+      value = 'b';
+      break;
+
+    case MT_TRANSITION_SLIDE_UP:
+      value = '/';
+      break;
+
+    case MT_TRANSITION_SLIDE_DOWN:
+      value = '\\';
+      break;
+
+    case MT_TRANSITION_HAMMER_ON:
+      value = 'h';
+      break;
+
+    case MT_TRANSITION_PULL_OFF:
+      value = 'p';
+      break;
+
+    default:
+      // Transition should be valid
+      assert(false);
+      break;
+  }
+
+  // Check to see if line break is necessary 
+  if ((MTO.current_line->length + 2) > mt_conf.max_line_length)
+    mt_output_line_break();
+
+  // Set the content of the transtion
+  switch (transition->destination->type)
+  {
+    case MT_OBJ_NOTE:
+    {
+      MtNote* note = transition->destination->as.note;
+      content[note->string] = value;
+    }
+    break;
+
+    case MT_OBJ_CHORD:
+    {
+      MtChord* chord = transition->destination->as.chord;
+      mt_queue_each_val(chord->notes, {
+        MtNote* note = (MtNote *) val;
+        content[note->string] = value;
+      });
+    }
+    break;
+
+    case MT_OBJ_SYMBOL:
+    {
+      MtSymbol* symbol = transition->destination->as.symbol;
+
+      MtPair* pair = mt_hash_search(MTR.symbol_table, symbol->name);
+      // TODO: Error handling if symbol isn't in the table (ie: search fails)
+      assert(pair != NULL);
+
+      MtObject* object = pair->value;
+      // TODO: Emit error if symbol isn't chord
+      assert(object->type == MT_OBJ_CHORD);
+
+      MtChord* chord = object->as.chord;
+      mt_queue_each_val(chord->notes, {
+        MtNote* note = (MtNote *) val;
+        content[note->string] = value;
+      });
+    }
+    break;
+
+    default:
+      // Transitions can only be to notes or chords
+      // Symbols can contain chords, so it is possible to transition to symbol
+      // TODO: Emit error
+      assert(false);
+      break;
+  }
+
+  // Write the transition content to the current line
+  int pos = MTO.current_line->length;
+      
   int string;
   for (string = 0; string < mt_conf.strings; ++string)
   {
-    if (transition->content[string] != '\0')
-      MTO.current_line->content[string][pos] = transition->content[string];
+    if (content[string] != '\0')
+      MTO.current_line->content[string][pos] = content[string];
     else
       MTO.current_line->content[string][pos] = '-';
   }
 
   MTO.current_line->length += 1;
+  mt_output_spacer();
 }
 
+static void
+mt_output_symbol(MtSymbol* symbol, MtModifier override)
+{
+  assert(symbol != NULL);
 
+  // Determine modifier to apply
+  // TODO: Refactor
+  MtModifier mod = symbol->modifier;
 
+  if (override != MT_MODIFIER_NONE)
+    mod = override;
+
+  MtPair* pair = mt_hash_search(MTR.symbol_table, symbol->name);
+  // TODO: Error handling if symbol isn't in the table (ie: search fails)
+  assert(pair != NULL);
+
+  MtObject* object = pair->value;
+
+  switch (object->type)
+  {
+    case MT_OBJ_CHORD:
+      mt_output_chord(object->as.chord, mod);
+      break;
+
+    case MT_OBJ_SEQUENCE:
+      mt_output_sequence(object->as.sequence, mod);
+      break;
+
+    default:
+      // Symbols should only be chords or sequences
+      assert(false);
+      break;
+  }
+}

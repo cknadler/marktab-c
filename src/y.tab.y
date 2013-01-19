@@ -197,8 +197,9 @@ object_group:
 
   | object multiplier
   {
-    int i; for(i = 0; i < $2; ++i)
-    { mtr_current_object_queue_enqueue($1); }
+    int i;
+    for(i = 0; i < $2; ++i)
+      mtr_current_object_queue_enqueue($1);
   }
 
 transition_chain:
@@ -287,7 +288,7 @@ chord_note_string_list:
 
 chord_note_string:
   MT_T_NUMBER 
-    { mt_queue_enqueue(current_chord_note_group, mt_note_new_without_fret($1)); }
+  { mt_queue_enqueue(current_chord_note_group, mt_note_new_without_fret($1)); }
 
 chord_fret:
   MT_T_NUMBER
