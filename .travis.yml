@@ -4,4 +4,4 @@ compiler:
   - gcc
 before_install:
   - git submodule update --init --recursive
-script: rake && make
+script: rake && make && rcomp test
