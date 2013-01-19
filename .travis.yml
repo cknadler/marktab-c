@@ -3,5 +3,5 @@ compiler:
   - clang
   - gcc
 before_install:
-  - git submodule update --init --recursive
+  - git submodule update --init --recursive && bundle install
 script: rake && make && rcomp test
