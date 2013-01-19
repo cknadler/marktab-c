@@ -3,5 +3,7 @@ compiler:
   - clang
   - gcc
 before_install:
-  - git submodule update --init --recursive && bundle install
+  - git submodule update --init --recursive
+  - bundle install
+  - rcomp init # this should be removed eventually
 script: rake && make && rcomp test
