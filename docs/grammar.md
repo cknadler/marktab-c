@@ -129,11 +129,13 @@ Modifiers and transitions modify notes.
 
 #### modifiers
 
-  * palm mute: `m`
+  * palm mute: `_`
   * harmonic: `*`
   * vibrato: `~`
 
 Modifiers are applied to a single note or chord.
+
+They can also be applied to symbols, but only chord symbols.
 
 #### transitions
 
