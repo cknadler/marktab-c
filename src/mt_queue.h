@@ -35,7 +35,7 @@ void mt_queue_free(MtQueue* queue);
 // Loads the values in a local variable `val`
 // Note that this doesn't dequeue the values
 #define mt_queue_each_val(self, block) { \
-    MtQueueNode* node; \
+    MtQueueNode* node = NULL; \
     int queue_pos; \
     void* val; \
     for (queue_pos = 0; queue_pos < self->size; ++queue_pos) { \
