@@ -31,7 +31,7 @@ extern int yyerror(const char* msg);
 
 "r"                    return MT_T_REST;
 
-"m"                    return MT_T_PALM_MUTE;
+"_"                    return MT_T_PALM_MUTE;
 "*"                    return MT_T_HARMONIC;
 "~"                    return MT_T_VIBRATO;
 

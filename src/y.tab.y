@@ -73,7 +73,7 @@
 
 %token MT_T_REST                  "r"
 
-%token MT_T_PALM_MUTE             "m"
+%token MT_T_PALM_MUTE             "_"
 %token MT_T_HARMONIC              "*"
 %token MT_T_VIBRATO               "~"
 
