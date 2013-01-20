@@ -14,12 +14,6 @@
 // Private protos
 //
 
-// Initialize the MtOutput
-static void mt_output_init();
-
-// Free the MtOutput
-static void mt_output_shutdown();
-
 // Create a new MtOutputLine
 static MtOutputLine* mt_output_line_new();
 
@@ -79,7 +73,8 @@ void
 mt_output(MtQueue* sections)
 {
   // Initialize the output
-  mt_output_init();
+  MTO.current_line = NULL;
+  MTO.line_buffer = mt_queue_new();
 
   // Iterate through every section
   while (sections->size > 0)
@@ -91,26 +86,15 @@ mt_output(MtQueue* sections)
 
   // Print the generated output
   mt_output_print();
-  mt_output_shutdown();
+
+  // Clean up the output
+  MTO.current_line = NULL;
+  mt_queue_free(MTO.line_buffer);
 }
 
 //
 // Private
 //
-
-static void 
-mt_output_init()
-{
-  MTO.current_line = NULL;
-  MTO.line_buffer = mt_queue_new();
-}
-
-static void
-mt_output_shutdown()
-{
-  MTO.current_line = NULL;
-  mt_queue_free(MTO.line_buffer);
-}
 
 MtOutputLine* mt_output_line_new()
 {
