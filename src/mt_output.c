@@ -263,29 +263,34 @@ mt_output_note_line(MtNote* note, int length, MtModifier override)
   }
 
   // Print the note's modifier, if present
-  char modifier = '\0';
+  MtModifier modifier = note->modifier;
 
-  switch (note->modifier)
+  if (override != MT_MODIFIER_NONE)
+    modifier = override;
+
+  char mod_char = '\0';
+
+  switch (modifier)
   {
     case MT_MODIFIER_PALM_MUTE:
-      modifier = 'm';
+      mod_char = 'm';
       break;
 
     case MT_MODIFIER_HARMONIC:
-      modifier = '*';
+      mod_char = '*';
       break;
 
     case MT_MODIFIER_VIBRATO:
-      modifier = '~';
+      mod_char = '~';
       break;
 
     default:
       break;
   }
 
-  if (modifier != '\0')
+  if (mod_char != '\0')
   {
-    MTO.current_line->content[note->string][pos] = modifier;
+    MTO.current_line->content[note->string][pos] = mod_char;
     ++pos;
   }
 
