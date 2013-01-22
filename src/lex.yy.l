@@ -43,7 +43,7 @@ extern int yyerror(const char* msg);
 
 ^-{3,}[ \t\r]*\n       return MT_T_CONFIG_SEPARATOR;
 
-[a-zA-Z_][a-zA-Z_0-9]* {
+[a-zA-Z][a-zA-Z0-9]* {
   yylval.string = mt_string_new_from_utf8(yytext);
   return MT_T_ID;
 }
