@@ -9,6 +9,7 @@
 
 typedef enum MtError
 {
+  INVALID_STRING,
   INVALID_CONF_OPTION,
   INVALID_CONF_DATA
 } MtError;

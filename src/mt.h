@@ -10,7 +10,7 @@
 #include "mt_chord.h"
 #include "mt_transition.h"
 #include "mt_sequence.h"
-#include "mt_config.h"
+#include "mt_conf.h"
 #include "mt_output.h"
 
 #include "mtr.h"

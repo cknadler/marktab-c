@@ -19,7 +19,7 @@ mt_sequence.c \
 mt_symbol.c \
 mt_queue.c \
 mtr.c \
-mt_config.c \
+mt_conf.c \
 mt_stack.c \
 mt_output.c \
 mt_hash.c \

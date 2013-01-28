@@ -10,5 +10,10 @@ task :debug_grammar do
 end
 task :dg => :debug_grammar
 
+desc "Run Test Suite"
+task :test do
+  system('rcomp test')
+end
+
 # Default Rake Task
 task :default => :build_env

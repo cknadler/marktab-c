@@ -4,6 +4,7 @@
 
 #include "mt_alloc.h"
 #include "mt_math.h"
+#include "mt_error.h"
 
 MtNote* mt_note_new_without_fret(int string)
 {

@@ -1,7 +1,7 @@
 #ifndef MT_TRANSITION_H
 #define MT_TRANSITION_H
 
-#include "mt_config.h"
+#include "mt_conf.h"
 
 struct MtObject;
 

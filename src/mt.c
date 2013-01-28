@@ -41,7 +41,7 @@ int main(int argc, const char* argv[])
 
   // Initailze the marktab runtime and config
   mtr_init();
-  mt_config_init();
+  mt_conf_init();
 
   // Parse the input
   yyparse();

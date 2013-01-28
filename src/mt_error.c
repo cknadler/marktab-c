@@ -6,6 +6,7 @@
 #include <stdlib.h>
 
 // Private protos
+static void invalid_string(int string);
 static void invalid_conf_option(char* op);
 static void invalid_conf_data(char* op);
 
@@ -17,6 +18,9 @@ void mt_error_emit(MtError e, ...)
   // Emit error message
   switch (e)
   {
+    case INVALID_STRING:
+      invalid_string(va_arg(argp, int));
+      break;
     case INVALID_CONF_OPTION:
       invalid_conf_option(va_arg(argp, char*));
       break;
@@ -39,6 +43,12 @@ void mt_error_emit(MtError e, ...)
   // TODO: you may want to change this to `exit(1)`
   // Not exactly sure of the implications of exiting with arbitrary codes
   exit(e);
+}
+
+static void
+invalid_string(int string)
+{
+  fprintf(stderr, "Invalid string %d.", string);
 }
 
 static void

@@ -105,8 +105,8 @@ MtOutputLine* mt_output_line_new()
   
   // Initialize all string arrays to be '\0'
   int string;
-  for (string = 0; string < mt_conf.strings; ++string)
-    memset(line->content[string], '\0', mt_conf.max_line_length);
+  for (string = 0; string < MT_CONF.strings; ++string)
+    memset(line->content[string], '\0', MT_CONF.max_line_length);
 
   return line;
 }
@@ -126,7 +126,7 @@ mt_output_print()
     MtOutputLine* line = mt_queue_dequeue(MTO.line_buffer);
 
     int i;
-    for(i = 0; i < mt_conf.strings; ++i)
+    for(i = 0; i < MT_CONF.strings; ++i)
       printf("%s\n", line->content[i]);
 
     mt_output_line_free(line);
@@ -156,9 +156,9 @@ static void
 mt_output_header()
 {
   int i;
-  for(i = 0; i < mt_conf.strings; ++i)
+  for(i = 0; i < MT_CONF.strings; ++i)
   {
-    MTO.current_line->content[i][0] = mt_conf.string_names[i]; 
+    MTO.current_line->content[i][0] = MT_CONF.string_names[i]; 
     MTO.current_line->content[i][1] = '|';
     MTO.current_line->content[i][2] = '-';
   }
@@ -171,7 +171,7 @@ static void
 mt_output_footer()
 {
   int i;
-  for(i = 0; i < mt_conf.strings; ++i)
+  for(i = 0; i < MT_CONF.strings; ++i)
   {
     MTO.current_line->content[i][MTO.current_line->length] = '|';
     MTO.current_line->content[i][MTO.current_line->length + 1] = '\0';
@@ -185,7 +185,7 @@ static void
 mt_output_spacer()
 {
   int i;
-  for(i = 0; i < mt_conf.strings; ++i)
+  for(i = 0; i < MT_CONF.strings; ++i)
     MTO.current_line->content[i][MTO.current_line->length] = '-';
 
   MTO.current_line->length += 1;
@@ -214,7 +214,7 @@ mt_output_object(MtObject* object, MtModifier override)
       break;
 
     case MT_OBJ_REST:
-      if ((MTO.current_line->length + 2) > mt_conf.max_line_length)
+      if ((MTO.current_line->length + 2) > MT_CONF.max_line_length)
         mt_output_line_break();
 
       mt_output_spacer();
@@ -237,7 +237,7 @@ mt_output_note_line(MtNote* note, int length, MtModifier override)
   assert(note != NULL);
   assert(length > 0);
 
-  char* note_chars = malloc(MT_CONFIG_MAX_FRET_DIGITS);
+  char* note_chars = malloc(MT_CONF_MAX_FRET_DIGITS);
   int note_length;
   
   // Check for regular note or muted
@@ -346,14 +346,14 @@ mt_output_note(MtNote* note, MtModifier override)
     ++size;
 
   // Break line if necessary is necessary
-  if ((MTO.current_line->length + size + 1) > mt_conf.max_line_length)
+  if ((MTO.current_line->length + size + 1) > MT_CONF.max_line_length)
     mt_output_line_break();
 
   // Output the note line and fill in blanks
   mt_output_note_line(note, size, mod);
 
   int string;
-  for (string = 0; string < mt_conf.strings; ++string)
+  for (string = 0; string < MT_CONF.strings; ++string)
   {
     if (MTO.current_line->content[string][MTO.current_line->length] == '\0')
       mt_output_spacer_line(string, size);
@@ -381,7 +381,7 @@ mt_output_chord(MtChord* chord, MtModifier override)
     ++size;
 
   // Check if a line break is necessary
-  if ((MTO.current_line->length + size + 1) > mt_conf.max_line_length)
+  if ((MTO.current_line->length + size + 1) > MT_CONF.max_line_length)
     mt_output_line_break();
 
   // Ouput each note in the chord
@@ -391,7 +391,7 @@ mt_output_chord(MtChord* chord, MtModifier override)
 
   // Fill all blank lines (where notes aren't present)
   int string;
-  for (string = 0; string < mt_conf.strings; ++string)
+  for (string = 0; string < MT_CONF.strings; ++string)
   {
     if (MTO.current_line->content[string][MTO.current_line->length] == '\0')
       mt_output_spacer_line(string, size);
@@ -425,8 +425,8 @@ mt_output_transition(MtTransition* transition)
   // TODO: Refactor
   // Shouldn't always be max
   // Initialize transition content
-  char content[MT_CONFIG_MAX_STRINGS];
-  memset(content, '\0', mt_conf.strings);
+  char content[MT_CONF_MAX_STRINGS];
+  memset(content, '\0', MT_CONF.strings);
 
   // Initalize the transition value
   char value;
@@ -459,7 +459,7 @@ mt_output_transition(MtTransition* transition)
   }
 
   // Check to see if line break is necessary 
-  if ((MTO.current_line->length + 2) > mt_conf.max_line_length)
+  if ((MTO.current_line->length + 2) > MT_CONF.max_line_length)
     mt_output_line_break();
 
   // Set the content of the transtion
@@ -514,7 +514,7 @@ mt_output_transition(MtTransition* transition)
   int pos = MTO.current_line->length;
       
   int string;
-  for (string = 0; string < mt_conf.strings; ++string)
+  for (string = 0; string < MT_CONF.strings; ++string)
   {
     if (content[string] != '\0')
       MTO.current_line->content[string][pos] = content[string];

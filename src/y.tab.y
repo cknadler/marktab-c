@@ -17,7 +17,7 @@
   #include "mt_transition.h"
   #include "mt_sequence.h"
   #include "mt_symbol.h"
-  #include "mt_config.h"
+  #include "mt_conf.h"
 
   #define YYDEBUG 0
 
@@ -131,7 +131,7 @@ conf_lines:
   conf_lines conf_line
   | empty
 
-/* Note this is currently stubbed, not functional yet */
+/* TODO: unstub and build conf lines */
 conf_line:
   MT_T_CONF_ID MT_T_CONF_VALUE
 
