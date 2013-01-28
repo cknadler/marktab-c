@@ -4,6 +4,7 @@
 
 #include "mt_alloc.h"
 #include "mt_math.h"
+#include "mt_conf.h"
 #include "mt_error.h"
 
 MtNote* mt_note_new_without_fret(int string)
@@ -13,6 +14,10 @@ MtNote* mt_note_new_without_fret(int string)
   assert(string > 0);
 
   note->type = MT_NOTE_NONE;
+
+  // String number error checking
+  if (string > MT_CONF.strings)
+    mt_error_emit(INVALID_STRING, string);
 
   note->string = string - 1;
   note->modifier = MT_MODIFIER_NONE;
@@ -31,6 +36,10 @@ MtNote* mt_note_new(int string, int fret)
   assert(fret >= 0);
 
   note->type = MT_NOTE_NOTE;
+  
+  // String number error checking
+  if (string > MT_CONF.strings)
+    mt_error_emit(INVALID_STRING, string);
 
   note->string = string - 1;
   note->fret = fret;
@@ -48,6 +57,10 @@ MtNote* mt_note_new_muted(int string)
   assert(note != NULL);
 
   note->type = MT_NOTE_MUTE;
+
+  // String number error checking
+  if (string > MT_CONF.strings)
+    mt_error_emit(INVALID_STRING, string);
 
   note->string = string - 1;
 

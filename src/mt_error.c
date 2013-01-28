@@ -5,6 +5,10 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+#include "lex.yy.c"
+
+extern int yylineno;
+
 // Private protos
 static void invalid_string(int string);
 static void invalid_conf_option(char* op);
@@ -48,7 +52,7 @@ void mt_error_emit(MtError e, ...)
 static void
 invalid_string(int string)
 {
-  fprintf(stderr, "Invalid string %d.", string);
+  fprintf(stderr, "Invalid string %d on line %d\n", string, yylineno);
 }
 
 static void
