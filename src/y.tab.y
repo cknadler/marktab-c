@@ -83,7 +83,8 @@
 %token MT_T_HAMMER_ON             "h"
 %token MT_T_PULL_OFF              "p"
 
-%token MT_T_CONFIG_SEPARATOR      "config separator"
+%token <string> MT_T_CONF_ID      "conf id"
+%token <string> MT_T_CONF_VALUE   "conf value"
 
 %token <string>  MT_T_ID          "identifier"
 %token <integer> MT_T_NUMBER      "number"
@@ -124,19 +125,15 @@
 %%
 
 tab:
-  optional_config_header section_list
+  conf_lines section_list
 
-optional_config_header:
-  MT_T_CONFIG_SEPARATOR config_lines MT_T_CONFIG_SEPARATOR
-  |empty
-
-config_lines:
-  config_lines config_line
+conf_lines:
+  conf_lines conf_line
   | empty
 
 /* Note this is currently stubbed, not functional yet */
-config_line:
-  MT_T_ID MT_T_NEWLINE
+conf_line:
+  MT_T_CONF_ID MT_T_CONF_VALUE
 
 section_list:
   section_list section

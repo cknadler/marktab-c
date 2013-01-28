@@ -8,6 +8,9 @@ extern int yyerror(const char* msg);
 
 %}
 
+%x confidbuild
+%x confvaluebuild
+
 %%
 
 [#].*[\n]              yylineno++;/* Ignore Comments */
@@ -41,7 +44,33 @@ extern int yyerror(const char* msg);
 "h"                    return MT_T_HAMMER_ON;
 "p"                    return MT_T_PULL_OFF;
 
-^-{3,}[ \t\r]*\n       return MT_T_CONFIG_SEPARATOR;
+^-{3,}[ \t\r]*\n {
+  BEGIN confidbuild; // Begin conf section
+}
+
+<confidbuild>^-{3,}[ \t\r]*\n {
+  BEGIN 0; // End conf section
+}
+
+<confidbuild>[ \t\r]*  /* ignore whitespace */
+
+<confidbuild>[^:\n]+ {
+  yylval.string = mt_string_new_from_utf8(yytext);
+  return MT_T_CONF_ID; 
+}
+
+<confidbuild>":" {
+  BEGIN confvaluebuild;
+}
+
+<confvaluebuild>[^\n]+ {
+  yylval.string = mt_string_new_from_utf8(yytext);
+  return MT_T_CONF_VALUE;
+}
+
+<confvaluebuild>[\n] {
+  BEGIN confidbuild;
+}
 
 [a-zA-Z][a-zA-Z0-9]* {
   yylval.string = mt_string_new_from_utf8(yytext);

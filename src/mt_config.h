@@ -28,4 +28,6 @@ void mt_config_set_string_names(char* names);
 
 void mt_config_set_num_strings(int strings);
 
+void mt_config_set_option(char* op, void* data);
+
 #endif

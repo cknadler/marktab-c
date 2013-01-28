@@ -20,6 +20,8 @@
 // http://code.google.com/p/smhasher/wiki/MurmurHash3
 // This is, for the most part, borrowed from the the HKL language
 // See https://github.com/hkl/hkl
+
+// TODO: look into a new hashing algorithm.
 static size_t Murmur3(const char* key, size_t len)
 {
   

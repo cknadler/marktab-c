@@ -55,5 +55,5 @@ invalid_conf_option(char* op)
 static void
 invalid_conf_data(char* op)
 {
-
+  fprintf(stderr, "Invalid config data for option: %s\n", op);
 }
