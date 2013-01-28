@@ -63,6 +63,8 @@ extern int yyerror(const char* msg);
   BEGIN confvaluebuild;
 }
 
+<confidbuild>.         yyerror(yytext);
+
 <confvaluebuild>[^\n]+ {
   yylval.string = mt_string_new_from_utf8(yytext);
   return MT_T_CONF_VALUE;
@@ -71,6 +73,8 @@ extern int yyerror(const char* msg);
 <confvaluebuild>[\n] {
   BEGIN confidbuild;
 }
+
+<confvaluebuild>.      yyerror(yytext);
 
 [a-zA-Z][a-zA-Z0-9]* {
   yylval.string = mt_string_new_from_utf8(yytext);
