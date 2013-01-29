@@ -5,8 +5,6 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-extern int yylineno;
-
 // Private protos
 static void invalid_string(int string);
 static void invalid_conf_option(char* op);
@@ -51,6 +49,7 @@ void mt_error_emit(MtError e, ...)
 static void
 invalid_string(int string)
 {
+  // TODO: Add line numbers
   fprintf(stderr, "Invalid string %d\n", string);
 }
 

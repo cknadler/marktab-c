@@ -131,9 +131,8 @@ conf_lines:
   conf_lines conf_line
   | empty
 
-/* TODO: unstub and build conf lines */
 conf_line:
-  MT_T_CONF_ID MT_T_CONF_VALUE
+  MT_T_CONF_ID MT_T_CONF_VALUE { mt_conf_set_option($1, $2); }
 
 section_list:
   section_list section
@@ -152,7 +151,7 @@ section:
 section_break:
   print_line
   {
-    // add print_line to tab_queue
+    // TODO: add print_line to tab_queue
   }
   /* TODO: FIX...this is extremely janky */
   | MT_T_EOF { YYACCEPT; }

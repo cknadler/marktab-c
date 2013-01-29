@@ -11,6 +11,8 @@
 // If you are playing a guitar with over 99 frets...marktab is not for you
 #define MT_CONF_MAX_FRET_DIGITS 3
 
+#include "mt_string.h"
+
 typedef struct MtConf
 {
   int strings;
@@ -22,12 +24,6 @@ MtConf MT_CONF;
 
 void mt_conf_init();
 
-void mt_conf_set_max_line_length(int length);
-
-void mt_conf_set_string_names(char* names);
-
-void mt_conf_set_num_strings(int strings);
-
-void mt_conf_set_option(char* op, void* data);
+void mt_conf_set_option(MtString* id, MtString* value);
 
 #endif
