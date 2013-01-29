@@ -16,7 +16,7 @@ MtNote* mt_note_new_without_fret(int string)
   note->type = MT_NOTE_NONE;
 
   // String number error checking
-  if (string > MT_CONF.strings)
+  if ((string > MT_CONF.strings) || (string == 0))
     mt_error_emit(INVALID_STRING, string);
 
   note->string = string - 1;
@@ -38,7 +38,7 @@ MtNote* mt_note_new(int string, int fret)
   note->type = MT_NOTE_NOTE;
   
   // String number error checking
-  if (string > MT_CONF.strings)
+  if ((string > MT_CONF.strings) || (string == 0))
     mt_error_emit(INVALID_STRING, string);
 
   note->string = string - 1;
@@ -59,7 +59,7 @@ MtNote* mt_note_new_muted(int string)
   note->type = MT_NOTE_MUTE;
 
   // String number error checking
-  if (string > MT_CONF.strings)
+  if ((string > MT_CONF.strings) || (string == 0))
     mt_error_emit(INVALID_STRING, string);
 
   note->string = string - 1;
