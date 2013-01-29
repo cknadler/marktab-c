@@ -108,7 +108,7 @@ Compares two MtStrings.
 
 @param string1 A MtString object.
 @param string2 A second MtString object to compare with.
-@retval int -1 If string1<string2 0 If string1==string2 1 If string1>string2
+@retval int -1 If string1<string2, 0 If string1==string2, 1 If string1>string2
 */
 int mt_string_compare(const MtString* string1, const MtString* string2);
 
@@ -117,7 +117,7 @@ Compares a MtString with utf8 data.
 
 @param string A MtString object.
 @param utf8_data A null-terminated utf8 string to compare.
-@retval int -1 If string<utf8 0 If string==utf8 1 If string>utf8
+@retval int -1 If string<utf8, 0 If string==utf8, 1 If string>utf8
 */
 int mt_string_compare_utf8(MtString* string, const char* utf8_data);
 
@@ -164,4 +164,3 @@ Free a MtString and releases any allocated resources it has.
 void mt_string_free(MtString* string);
 
 #endif // MT_STRING_H
-
