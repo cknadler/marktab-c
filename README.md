@@ -56,4 +56,4 @@ Issues and, better yet, pull requests are more than welcome. See [CONTRIBUTING](
 
 ## Copyright
 
-Copyright (c) 2012 Chris Knadler. See LICENSE for details.
+Copyright (c) 2012 Chris Knadler. See [LICENSE](https://github.com/cknadler/marktab/blob/master/LICENSE) for details.
