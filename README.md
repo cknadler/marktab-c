@@ -4,9 +4,9 @@ Concise, machine readable, guitar tabs.
 
 ## Development
 
-marktab is actively under development. Contributions are more than welcome.
+MarkTab is actively under development. Contributions are more than welcome.
 
-#### Compile
+#### Build
 
 Requirements:
 
@@ -45,6 +45,10 @@ And then, to run all tests:
 ```bash
 rcomp test
 ```
+
+#### Docs
+
+The [MarkTab grammar](https://github.com/cknadler/marktab/blob/master/docs/grammar.md) is fairly solid at this point. Until the first implementation is finished, this is the only real source of documentation for the language. If you have any questions or comments, feel free to open an issue.
 
 ## Copyright
 
