@@ -46,9 +46,13 @@ And then, to run all tests:
 rcomp test
 ```
 
-#### Docs
+## Docs
 
 The [MarkTab grammar](https://github.com/cknadler/marktab/blob/master/docs/grammar.md) is fairly solid at this point. Until the first implementation is finished, this is the only real source of documentation for the language. If you have any questions or comments, feel free to open an issue.
+
+## Contributing
+
+Issues and, better yet, pull requests are more than welcome. See [CONTRIBUTING](https://github.com/cknadler/marktab/blob/master/CONTRIBUTING.md) for details.
 
 ## Copyright
 
