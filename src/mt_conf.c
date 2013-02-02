@@ -35,6 +35,10 @@ mt_conf_set_option(MtString* id, MtString* value)
 
   if (mt_string_compare_utf8(id, "line_length"))
     mt_conf_set_line_length(value);
+
+  // Free strings
+  mt_string_free(id);
+  mt_string_free(value);
 }
 
 static void
@@ -42,6 +46,21 @@ mt_conf_set_tuning(MtString* value)
 {
   // TODO: Set tuning based on conf value
   // This should inherently set the string number as well
+
+  /*
+  int length = mt_string_get_length(value);
+  const char* raw_data = mt_string_get_utf8(value);
+  char* tuning = malloc(MT_CONF_MAX_STRINGS);
+
+  // TODO: Use a regex parser
+  size_t i;
+  for (i = 0; i < length; ++i)
+  {
+    int ascii_value = raw_data[i];
+  }
+
+  free(tuning);
+  */
 }
 
 static void

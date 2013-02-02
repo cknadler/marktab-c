@@ -186,10 +186,15 @@ object_group:
 
   | object
   {
-    // TODO: Emit error if $1 is not a note or chord
     mtr_current_object_queue_enqueue($1); 
   } 
   transition_chain
+  {
+    // TODO: Emit error if $1 is not a note or chord
+    // this is to stop transitions from being applied to
+    // anything besides chords and notes
+    // That means no rests or sequences
+  }
 
   | object multiplier
   {

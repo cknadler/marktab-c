@@ -2,36 +2,14 @@
 *.o
 
 # Binaries
-testbed
 marktab
 *.out
 
-# Automake generated files and folders
-Makefile
-src/Makefile
-config.log
-config.status
-*.Po
-*.cache/
-.deps/
-.libs/
-
-# Autotools generated files, can be built on each system
-Makefile.in
-src/Makefile.in
-libtool
-aclocal.m4
-config.guess
-config.sub
-install-sh
-missing
-depcomp
-ylwrap
-configure
-compile
+# Bin directory
+bin
 
 # Flex and Bison generated files
-src/y.tab.h
-src/y.tab.c
-src/lex.yy.c
-src/y.tab.output
+mt_lexer.c
+mt_parser.h
+mt_parser.c
+mt_parser.output

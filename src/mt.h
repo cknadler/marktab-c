@@ -15,6 +15,6 @@
 
 #include "mtr.h"
 
-#include "y.tab.h"
+#include "mt_parser.h"
 
 #endif

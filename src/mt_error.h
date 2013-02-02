@@ -11,7 +11,8 @@ typedef enum MtError
 {
   INVALID_STRING,
   INVALID_CONF_OPTION,
-  INVALID_CONF_DATA
+  INVALID_CONF_DATA,
+  UNDEFINED_SYMBOL
 } MtError;
 
 void mt_error_emit(MtError e, ...);

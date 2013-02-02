@@ -9,6 +9,7 @@
 #include "mt_object.h"
 #include "mtr.h"
 #include "mt_hash.h"
+#include "mt_error.h"
 
 //
 // Private protos
@@ -487,10 +488,13 @@ mt_output_transition(MtTransition* transition)
       MtSymbol* symbol = transition->destination->as.symbol;
 
       MtPair* pair = mt_hash_search(MTR.symbol_table, symbol->name);
-      // TODO: Error handling if symbol isn't in the table (ie: search fails)
-      assert(pair != NULL);
+
+      // Error handling if symbol isn't in the table (ie: search fails)
+      if (pair == NULL)
+        mt_error_emit(UNDEFINED_SYMBOL, mt_string_get_utf8(symbol->name));
 
       MtObject* object = pair->value;
+
       // TODO: Emit error if symbol isn't chord
       assert(object->type == MT_OBJ_CHORD);
 
@@ -539,8 +543,10 @@ mt_output_symbol(MtSymbol* symbol, MtModifier override)
     mod = override;
 
   MtPair* pair = mt_hash_search(MTR.symbol_table, symbol->name);
-  // TODO: Error handling if symbol isn't in the table (ie: search fails)
-  assert(pair != NULL);
+
+  // Error handling if symbol isn't in the table (ie: search fails)
+  if (pair == NULL)
+    mt_error_emit(UNDEFINED_SYMBOL, mt_string_get_utf8(symbol->name));
 
   MtObject* object = pair->value;
 

@@ -9,6 +9,7 @@
 static void invalid_string(int string);
 static void invalid_conf_option(char* op);
 static void invalid_conf_data(char* op);
+static void undefined_symbol(char* sym);
 
 void mt_error_emit(MtError e, ...)
 {
@@ -28,6 +29,10 @@ void mt_error_emit(MtError e, ...)
 
     case INVALID_CONF_DATA:
       invalid_conf_data(va_arg(argp, char*));
+      break;
+
+    case UNDEFINED_SYMBOL:
+      undefined_symbol(va_arg(argp, char*));
       break;
 
     default:
@@ -68,4 +73,10 @@ static void
 invalid_conf_data(char* op)
 {
   fprintf(stderr, "Invalid config data for option: %s\n", op);
+}
+
+static void
+undefined_symbol(char* sym)
+{
+  fprintf(stderr, "Undefined symbol: %s\n", sym);
 }
