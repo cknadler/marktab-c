@@ -9,3 +9,6 @@ mt_lexer.c
 mt_parser.h
 mt_parser.c
 mt_parser.output
+
+# RComp generated files
+spec/rcomp/results
