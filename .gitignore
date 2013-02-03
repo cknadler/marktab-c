@@ -1,10 +1,6 @@
 # Objects
 *.o
 
-# Binaries
-marktab
-*.out
-
 # Bin directory
 bin
 
