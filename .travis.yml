@@ -1,9 +1,13 @@
 language: c
+
 compiler: 
   - clang
   - gcc
+
 before_install:
-  - git submodule update --init --recursive
   - bundle install
-  - rcomp init # this should be removed eventually
-script: rake && make && rcomp test
+  - rcomp init # this should be removed eventually, bug with RComp
+
+script:
+  - make
+  - make test

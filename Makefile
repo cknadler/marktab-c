@@ -53,6 +53,9 @@ $(MARKTAB_DIR)/mt_lexer.o: $(MARKTAB_DIR)/marktab.l
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
+test:
+	rcomp test
+
 clean:
 	rm -rf $(BIN_DIR)
 	rm -f $(MARKTAB_DIR)/*.o
