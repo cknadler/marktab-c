@@ -49,7 +49,7 @@ int main(int argc, const char* argv[])
   // Output
   mt_output(MTR.sections);
 
-  // Destroy config and runtime
+  // TODO: Destroy config and runtime
 
   if (yyin != NULL)
     fclose(yyin);

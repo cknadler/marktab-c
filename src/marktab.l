@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 
+// TODO: Remove this header
 #include "mt.h"
 
 extern int yyerror(const char* msg);
@@ -63,7 +64,9 @@ extern int yyerror(const char* msg);
   BEGIN confvaluebuild;
 }
 
-<confidbuild>.         yyerror(yytext);
+<confidbuild>. {
+  yyerror(yytext);
+}
 
 <confvaluebuild>[^\n]+ {
   yylval.string = mt_string_new_from_utf8(yytext);
@@ -74,7 +77,9 @@ extern int yyerror(const char* msg);
   BEGIN confidbuild;
 }
 
-<confvaluebuild>.      yyerror(yytext);
+<confvaluebuild>. {
+  yyerror(yytext);
+}
 
 [a-zA-Z][a-zA-Z0-9]* {
   yylval.string = mt_string_new_from_utf8(yytext);
