@@ -11,10 +11,28 @@ BIN_DIR = bin
 
 MARKTAB_DIR = src
 
-MARKTAB_SRCS := $(wildcard $(MARKTAB_DIR)/*.c)
-MARKTAB_OBJS := $(MARKTAB_SRCS:.c=.o)
+MARKTAB_SRCS = \
+mt_string.c \
+mt.c \
+mt_object.c \
+mt_note.c \
+mt_chord.c \
+mt_transition.c \
+mt_sequence.c \
+mt_symbol.c \
+mt_queue.c \
+mtr.c \
+mt_conf.c \
+mt_stack.c \
+mt_output.c \
+mt_hash.c \
+mt_pair.c \
+mt_tree.c \
+mt_error.c
 
-LLYY_OBJS := $(addprefix $(MARKTAB_DIR)/,mt_parser.o mt_lexer.o)
+MARKTAB_OBJS = $(addprefix $(MARKTAB_DIR)/,$(MARKTAB_SRCS:.c=.o))
+
+LLYY_OBJS = $(addprefix $(MARKTAB_DIR)/,mt_parser.o mt_lexer.o)
 
 all: marktab
 
