@@ -43,11 +43,11 @@ bin:
 	mkdir -p $(BIN_DIR)
 
 $(MARKTAB_DIR)/mt_parser.o: $(MARKTAB_DIR)/marktab.y
-	$(YACC) $(YFLAGS) $(MARKTAB_DIR)/marktab.y -o $(MARKTAB_DIR)/mt_parser.c
+	$(YACC) $(YFLAGS) $< -o $(MARKTAB_DIR)/mt_parser.c
 	$(CC) $(CFLAGS) -c $(MARKTAB_DIR)/mt_parser.c -o $@
 
 $(MARKTAB_DIR)/mt_lexer.o: $(MARKTAB_DIR)/marktab.l
-	$(LEX) $(LFLAGS) -o $(MARKTAB_DIR)/mt_lexer.c $(MARKTAB_DIR)/marktab.l
+	$(LEX) $(LFLAGS) -o $(MARKTAB_DIR)/mt_lexer.c $<
 	$(CC) $(CFLAGS) -c $(MARKTAB_DIR)/mt_lexer.c -o $@
 
 %.o: %.c
@@ -58,6 +58,4 @@ test:
 
 clean:
 	rm -rf $(BIN_DIR)
-	rm -f $(MARKTAB_DIR)/*.o
-	rm -f $(MARKTAB_DIR)/mt_lexer.*
-	rm -f $(MARKTAB_DIR)/mt_parser.*
+	rm -f $(addprefix $(MARKTAB_DIR)/,*.o mt_lexer.* mt_parser.*)
