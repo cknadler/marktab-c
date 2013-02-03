@@ -3,25 +3,26 @@ YACC = bison
 LEX = flex
 
 CFLAGS = -g -Wall -Wextra -Werror -Wno-unused-parameter -Wno-unused-function -std=gnu99
-LDFLAGS = 
+LDFLAGS =
 YFLAGS = -vyd
 LFLAGS =
 
 BIN_DIR = bin
 
 MARKTAB_DIR = src
-MARKTAB_SRCS = $(wildcard src/*.c)
-MARKTAB_OBJS = $(MARKTAB_SRCS:.c=.o)
+
+MARKTAB_SRCS := $(wildcard $(MARKTAB_DIR)/*.c)
+MARKTAB_OBJS := $(MARKTAB_SRCS:.c=.o)
+
+LLYY_OBJS := $(addprefix $(MARKTAB_DIR)/,mt_parser.o mt_lexer.o)
 
 all: marktab
 
-marktab: bin llyy $(MARKTAB_OBJS)
-	$(CC) $(LDFLAGS) $(MARKTAB_OBJS) -o $(BIN_DIR)/marktab
+marktab: bin $(LLYY_OBJS) $(MARKTAB_OBJS)
+	$(CC) $(LDFLAGS) $(LLYY_OBJS) $(MARKTAB_OBJS) -o $(BIN_DIR)/marktab
 
 bin:
 	mkdir -p $(BIN_DIR)
-
-llyy: $(MARKTAB_DIR)/mt_parser.o $(MARKTAB_DIR)/mt_lexer.o
 
 $(MARKTAB_DIR)/mt_parser.o: $(MARKTAB_DIR)/marktab.y
 	$(YACC) $(YFLAGS) $(MARKTAB_DIR)/marktab.y -o $(MARKTAB_DIR)/mt_parser.c
@@ -41,4 +42,3 @@ clean:
 	rm -f $(MARKTAB_DIR)/mt_parser.h
 	rm -f $(MARKTAB_DIR)/mt_parser.c
 	rm -f $(MARKTAB_DIR)/mt_parser.output
-	
