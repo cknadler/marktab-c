@@ -8,20 +8,7 @@ MarkTab is actively under development. Contributions are more than welcome.
 
 #### Build
 
-Requirements:
-
-* automake
-* autoconf
-* libtool
-
-To build run (only the first time):
-
-```bash
-bundle install
-rake
-```
-
-and then, as usual:
+No dependencies, just run:
 
 ```bash
 make
@@ -43,7 +30,7 @@ bundle install
 And then, to run all tests:
 
 ```bash
-rcomp test
+make test
 ```
 
 ## Docs
