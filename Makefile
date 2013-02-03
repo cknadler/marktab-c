@@ -59,7 +59,5 @@ test:
 clean:
 	rm -rf $(BIN_DIR)
 	rm -f $(MARKTAB_DIR)/*.o
-	rm -f $(MARKTAB_DIR)/mt_lexer.c
-	rm -f $(MARKTAB_DIR)/mt_parser.h
-	rm -f $(MARKTAB_DIR)/mt_parser.c
-	rm -f $(MARKTAB_DIR)/mt_parser.output
+	rm -f $(MARKTAB_DIR)/mt_lexer.*
+	rm -f $(MARKTAB_DIR)/mt_parser.*
