@@ -11,7 +11,7 @@ LEX = flex
 ########################################################################
 
 CFLAGS = -g -Wall -Wextra -Werror -Wno-unused-parameter -Wno-unused-function -std=gnu99 -O3
-LDFLAGS =
+LDFLAGS = -lm
 YFLAGS = -vyd
 LFLAGS =
 
