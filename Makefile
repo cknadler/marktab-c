@@ -51,7 +51,7 @@ LLYY_OBJS = $(addprefix $(MARKTAB_DIR)/,mt_parser.o mt_lexer.o)
 all: marktab
 
 marktab: bin $(LLYY_OBJS) $(MARKTAB_OBJS)
-	$(CC) $(LDFLAGS) $(LLYY_OBJS) $(MARKTAB_OBJS) -o $(BIN_DIR)/marktab
+	$(CC) $(LLYY_OBJS) $(MARKTAB_OBJS) $(LDFLAGS) -o $(BIN_DIR)/marktab
 
 bin:
 	mkdir -p $(BIN_DIR)
