@@ -8,6 +8,10 @@ before_install:
   - bundle install
   - rcomp init # this should be removed eventually, bug with RComp
 
+install:
+  - sudo apt-get update >/dev/null
+  - sudo apt-get install check valgrind
+
 script:
   - make
   - make test
