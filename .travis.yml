@@ -9,9 +9,10 @@ before_install:
   - rcomp init # this should be removed eventually, bug with RComp
 
 install:
-  - sudo apt-get update >/dev/null
-  - sudo apt-get install check valgrind
+  - sudo apt-get -q install check valgrind
 
 script:
   - make
+
+after_success:
   - make test
