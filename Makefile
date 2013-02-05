@@ -1,14 +1,25 @@
+########################################################################
+# tools
+########################################################################
+
 CC = gcc
 YACC = bison
 LEX = flex
 
-CFLAGS = -g -Wall -Wextra -Werror -Wno-unused-parameter -Wno-unused-function -std=gnu99
+########################################################################
+# flags
+########################################################################
+
+CFLAGS = -g -Wall -Wextra -Werror -Wno-unused-parameter -Wno-unused-function -std=gnu99 -O3
 LDFLAGS =
 YFLAGS = -vyd
 LFLAGS =
 
-BIN_DIR = bin
+########################################################################
+# files
+########################################################################
 
+BIN_DIR = bin
 MARKTAB_DIR = src
 
 MARKTAB_SRCS = \
@@ -31,8 +42,11 @@ mt_tree.c \
 mt_error.c
 
 MARKTAB_OBJS = $(addprefix $(MARKTAB_DIR)/,$(MARKTAB_SRCS:.c=.o))
-
 LLYY_OBJS = $(addprefix $(MARKTAB_DIR)/,mt_parser.o mt_lexer.o)
+
+########################################################################
+# targets
+########################################################################
 
 all: marktab
 
