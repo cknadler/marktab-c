@@ -12,3 +12,7 @@ mt_parser.output
 
 # RComp generated files
 spec/rcomp/results
+
+# clar generated files
+.clarcache
+clar.suite
