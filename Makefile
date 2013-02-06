@@ -70,9 +70,13 @@ $(MARKTAB_DIR)/mt_lexer.o: $(MARKTAB_DIR)/marktab.l
 test:
 	rcomp test
 
-# Note: Clean nukes the bin directory.
+# Note: build_clean nukes the bin directory.
 # Don't put anything in there you are attached to.
-
-clean:
+build_clean:
 	rm -rf $(BIN_DIR)
 	rm -f $(addprefix $(MARKTAB_DIR)/,*.o mt_lexer.* mt_parser.*)
+
+test_clean:
+	rm -rf spec/rcomp/results
+
+clean: build_clean test_clean
