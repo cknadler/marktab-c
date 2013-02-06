@@ -70,6 +70,9 @@ $(MARKTAB_DIR)/mt_lexer.o: $(MARKTAB_DIR)/marktab.l
 test:
 	rcomp test
 
+# Note: Clean nukes the bin directory.
+# Don't put anything in there you are attached to.
+
 clean:
 	rm -rf $(BIN_DIR)
 	rm -f $(addprefix $(MARKTAB_DIR)/,*.o mt_lexer.* mt_parser.*)
