@@ -1,12 +1,19 @@
 %{
-
 #include <stdio.h>
 
-// TODO: Remove this header
-#include "mt.h"
+#include "mt_string.h"
+
+// NOTE: 
+// It seems that I have to include all the structs that are used in the
+// union for marktab.y here. I have no idea why...
+#include "mt_object.h"
+#include "mt_note.h"
+#include "mt_chord.h"
+#include "mt_sequence.h"
+
+#include "mt_parser.h"
 
 extern int yyerror(const char* msg);
-
 %}
 
 %x confidbuild
@@ -64,10 +71,6 @@ extern int yyerror(const char* msg);
   BEGIN confvaluebuild;
 }
 
-<confidbuild>. {
-  yyerror(yytext);
-}
-
 <confvaluebuild>[^\n]+ {
   yylval.string = mt_string_new_from_utf8(yytext);
   return MT_T_CONF_VALUE;
@@ -75,10 +78,6 @@ extern int yyerror(const char* msg);
 
 <confvaluebuild>[\n] {
   BEGIN confidbuild;
-}
-
-<confvaluebuild>. {
-  yyerror(yytext);
 }
 
 [a-zA-Z][a-zA-Z0-9]* {
