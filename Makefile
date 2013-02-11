@@ -26,30 +26,13 @@ SRC_DIR = src
 INCLUDE_DIR = include
 EXAMPLES_DIR = examples
 
-LIBMT_SRCS = \
-mt_string.c \
-mt_object.c \
-mt_note.c \
-mt_chord.c \
-mt_transition.c \
-mt_sequence.c \
-mt_symbol.c \
-mt_queue.c \
-mtr.c \
-mt_conf.c \
-mt_stack.c \
-mt_output.c \
-mt_hash.c \
-mt_pair.c \
-mt_tree.c \
-mt_error.c
+LIBMT_SRCS = $(wildcard $(SRC_DIR)/*.c)
 
-EXAMPLE_SRCS = \
-cli.c 
+EXAMPLE_SRCS = $(EXAMPLES_DIR)/cli.c
 
-LIBMT_OBJS = $(addprefix $(SRC_DIR)/,mt_parser.o mt_lexer.o $(LIBMT_SRCS:.c=.o))
+LIBMT_OBJS = $(addprefix $(SRC_DIR)/,mt_parser.o mt_lexer.o) $(LIBMT_SRCS:.c=.o)
 
-EXAMPLE_OBJS = $(addprefix $(EXAMPLES_DIR)/,$(EXAMPLE_SRCS:.c=.o))
+EXAMPLE_OBJS = $(EXAMPLE_SRCS:.c=.o)
 
 ########################################################################
 # targets
@@ -83,6 +66,7 @@ test:
 # Don't get attached to anything in there
 clean_build:
 	rm -f $(addprefix $(SRC_DIR)/,*.o mt_lexer.* mt_parser.*)
+	rm -f $(INCLUDE_DIR)/libmt.a
 
 clean_test:
 	rm -rf spec/rcomp/results
