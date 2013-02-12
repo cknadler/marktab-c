@@ -26,7 +26,6 @@ MtNote* mt_note_new_without_fret(int string);
 
 // Setters
 void mt_note_set_modifier(MtNote* note, MtModifier modifier);
-
 void mt_note_set_fret(MtNote* note, int fret);
 void mt_note_set_muted(MtNote* note);
 

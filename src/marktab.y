@@ -1,33 +1,28 @@
 %{
+#include <stdio.h>
 
-  // StdLib
-  #include <stdio.h>
+#include "mt_string.h"
+#include "mt_queue.h"
+#include "mt_hash.h"
 
-  // External
-  #include "mt_string.h"
-  #include "mt_queue.h"
-  #include "mt_hash.h"
+#include "mtr.h"
+#include "mt_object.h"
+#include "mt_modifier.h"
+#include "mt_note.h"
+#include "mt_chord.h"
+#include "mt_transition.h"
+#include "mt_sequence.h"
+#include "mt_symbol.h"
+#include "mt_conf.h"
 
-  // Internal
-  #include "mtr.h"
-  #include "mt_object.h"
-  #include "mt_modifier.h"
-  #include "mt_note.h"
-  #include "mt_chord.h"
-  #include "mt_transition.h"
-  #include "mt_sequence.h"
-  #include "mt_symbol.h"
-  #include "mt_conf.h"
+#define YYDEBUG 0
 
-  #define YYDEBUG 0
+extern int yylex();
+extern int yyerror(char const*);
 
-  extern int yylex();
-  extern int yyerror(char const*);
-
-  // Parser locals
-  MtQueue* current_chord_construction;
-  MtQueue* current_chord_note_group;
-
+// Parser locals
+MtQueue* current_chord_construction;
+MtQueue* current_chord_note_group;
 %}
 
 %start tab
@@ -49,10 +44,9 @@
 
 
 /*
-  Token List
+  Token List:
+  Please keep these in the same order as marktab.l
 */
-
-/* Please keep these in the same order as the tokens in lex.yy.l */
 
 %token MT_T_NEWLINE               "newline"
 

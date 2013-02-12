@@ -5,6 +5,7 @@
 CC = gcc
 YACC = bison
 LEX = flex
+AR = ar
 
 ########################################################################
 # flags
@@ -12,6 +13,7 @@ LEX = flex
 
 CFLAGS = -g -Wall -Wextra -Werror -Wno-unused-parameter -Wno-unused-function -std=gnu99 -O3
 LDFLAGS = -lm
+ARFLAGS = -rcs
 YFLAGS = -vyd
 LFLAGS =
 
@@ -20,49 +22,39 @@ LFLAGS =
 ########################################################################
 
 BIN_DIR = bin
-MARKTAB_DIR = src
+SRC_DIR = src
+INCLUDE_DIR = include
+EXAMPLES_DIR = examples
 
-MARKTAB_SRCS = \
-mt_string.c \
-mt.c \
-mt_object.c \
-mt_note.c \
-mt_chord.c \
-mt_transition.c \
-mt_sequence.c \
-mt_symbol.c \
-mt_queue.c \
-mtr.c \
-mt_conf.c \
-mt_stack.c \
-mt_output.c \
-mt_hash.c \
-mt_pair.c \
-mt_tree.c \
-mt_error.c
+LIBMT_SRCS = $(wildcard $(SRC_DIR)/*.c)
 
-MARKTAB_OBJS = $(addprefix $(MARKTAB_DIR)/,$(MARKTAB_SRCS:.c=.o))
-LLYY_OBJS = $(addprefix $(MARKTAB_DIR)/,mt_parser.o mt_lexer.o)
+EXAMPLE_SRCS = $(EXAMPLES_DIR)/cli.c
+
+LIBMT_OBJS = $(addprefix $(SRC_DIR)/,mt_parser.o mt_lexer.o) $(LIBMT_SRCS:.c=.o)
+
+EXAMPLE_OBJS = $(EXAMPLE_SRCS:.c=.o)
 
 ########################################################################
 # targets
 ########################################################################
 
-all: marktab
+all: libmt
 
-marktab: bin $(LLYY_OBJS) $(MARKTAB_OBJS)
-	$(CC) $(LLYY_OBJS) $(MARKTAB_OBJS) $(LDFLAGS) -o $(BIN_DIR)/marktab
+examples: libmt $(EXAMPLE_OBJS)
+	$(CC) $(LDFLAGS) $(EXAMPLE_OBJS) -o $(EXAMPLES_DIR)/marktab
 
-bin:
-	mkdir -p $(BIN_DIR)
+libmt: $(LIBMT_OBJS)
+	$(AR) $(ARFLAGS) $(INCLUDE_DIR)/libmt.a $<
 
-$(MARKTAB_DIR)/mt_parser.o: $(MARKTAB_DIR)/marktab.y
-	$(YACC) $(YFLAGS) $< -o $(MARKTAB_DIR)/mt_parser.c
-	$(CC) $(CFLAGS) -c $(MARKTAB_DIR)/mt_parser.c -o $@
+$(SRC_DIR)/mt_parser.o: $(SRC_DIR)/marktab.y
+	$(YACC) $(YFLAGS) $< -o $(SRC_DIR)/mt_parser.c
+	$(CC) $(CFLAGS) -c $(SRC_DIR)/mt_parser.c -o $@
+	@rm $(SRC_DIR)/mt_parser.c
 
-$(MARKTAB_DIR)/mt_lexer.o: $(MARKTAB_DIR)/marktab.l
-	$(LEX) $(LFLAGS) -o $(MARKTAB_DIR)/mt_lexer.c $<
-	$(CC) $(CFLAGS) -c $(MARKTAB_DIR)/mt_lexer.c -o $@
+$(SRC_DIR)/mt_lexer.o: $(SRC_DIR)/marktab.l
+	$(LEX) $(LFLAGS) -o $(SRC_DIR)/mt_lexer.c $<
+	$(CC) $(CFLAGS) -c $(SRC_DIR)/mt_lexer.c -o $@
+	@rm $(SRC_DIR)/mt_lexer.c
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -71,12 +63,12 @@ test:
 	rcomp test
 
 # Note: build_clean nukes the bin directory.
-# Don't put anything in there you are attached to.
-build_clean:
-	rm -rf $(BIN_DIR)
-	rm -f $(addprefix $(MARKTAB_DIR)/,*.o mt_lexer.* mt_parser.*)
+# Don't get attached to anything in there
+clean_build:
+	rm -f $(addprefix $(SRC_DIR)/,*.o mt_lexer.* mt_parser.*)
+	rm -f $(INCLUDE_DIR)/libmt.a
 
-test_clean:
+clean_test:
 	rm -rf spec/rcomp/results
 
-clean: build_clean test_clean
+clean: clean_build clean_test
