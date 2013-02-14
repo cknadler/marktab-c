@@ -11,7 +11,15 @@ AR = ar
 # flags
 ########################################################################
 
-CFLAGS = -Iinclude/ -g -Wall -Wextra -Werror -Wno-unused-parameter -Wno-unused-function -std=gnu99 -O3
+# cflags
+INCLUDE = -Iinclude/
+DEBUG = -g
+ERROR = -Wall -Wextra -Werror -Werror -Wno-unused-parameter -Wno-unused-function
+PEDANTIC = -pedantic -pedantic-errors
+STANDARD = -std=gnu99
+OPTIMIZATION = -O3
+CFLAGS = $(INCLUDE) $(DEBUG) $(ERROR) $(PEDANTIC) $(STANDARD) $(OPTIMIZATION)
+
 LDFLAGS = -lm
 ARFLAGS = -rcs
 YFLAGS = -vyd
