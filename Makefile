@@ -79,3 +79,5 @@ clean_test:
 	rm -f $(addprefix $(CLAR_DIR)/,.clarcache clar.suite clar_test.h)
 
 clean: clean_build clean_test
+
+rebuild: clean all
