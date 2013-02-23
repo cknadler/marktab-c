@@ -6,7 +6,7 @@
 typedef struct MtQueueNode
 {
   void* value;
-  struct MtQueueNode* next; 
+  struct MtQueueNode* next;
 } MtQueueNode;
 
 typedef struct MtQueue
