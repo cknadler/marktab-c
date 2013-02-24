@@ -53,6 +53,6 @@ void mt_queue_free(MtQueue* queue);
       val = mt_queue_dequeue(self); \
       block; \
     } \
-  } \
+  }
 
 #endif // MT_QUEUE_H

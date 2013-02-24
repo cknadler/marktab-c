@@ -11,20 +11,32 @@ AR = ar
 # flags
 ########################################################################
 
-CFLAGS = -g -Wall -Wextra -Werror -Wno-unused-parameter -Wno-unused-function -std=gnu99 -O3
+# cflags
+INCLUDE = -Iinclude/
+DEBUG = -g
+ERROR = -Wall -Wextra -Werror -Werror -Wno-unused-parameter -Wno-unused-function
+PEDANTIC = -pedantic -pedantic-errors
+STANDARD = -std=gnu99
+OPTIMIZATION = -O3
+CFLAGS = $(INCLUDE) $(DEBUG) $(ERROR) $(PEDANTIC) $(STANDARD) $(OPTIMIZATION)
+
 LDFLAGS = -lm
 ARFLAGS = -rcs
 YFLAGS = -vyd
 LFLAGS =
 
 ########################################################################
-# files
+# files and directories
 ########################################################################
 
-BIN_DIR = bin
+# Source Directories
 SRC_DIR = src
 INCLUDE_DIR = include
 EXAMPLES_DIR = examples
+
+# Test Directories
+RCOMP_DIR = spec/rcomp
+CLAR_DIR = spec/clar
 
 LIBMT_SRCS = $(wildcard $(SRC_DIR)/*.c)
 
@@ -46,11 +58,13 @@ examples: libmt $(EXAMPLE_OBJS)
 libmt: $(LIBMT_OBJS)
 	$(AR) $(ARFLAGS) $(INCLUDE_DIR)/libmt.a $<
 
+# Parser Target
 $(SRC_DIR)/mt_parser.o: $(SRC_DIR)/marktab.y
 	$(YACC) $(YFLAGS) $< -o $(SRC_DIR)/mt_parser.c
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/mt_parser.c -o $@
 	@rm $(SRC_DIR)/mt_parser.c
 
+# Lexer Target
 $(SRC_DIR)/mt_lexer.o: $(SRC_DIR)/marktab.l
 	$(LEX) $(LFLAGS) -o $(SRC_DIR)/mt_lexer.c $<
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/mt_lexer.c -o $@
@@ -69,6 +83,9 @@ clean_build:
 	rm -f $(INCLUDE_DIR)/libmt.a
 
 clean_test:
-	rm -rf spec/rcomp/results
+	rm -rf $(RCOMP_DIR)/results
+	rm -f $(addprefix $(CLAR_DIR)/,.clarcache clar.suite clar_test.h)
 
 clean: clean_build clean_test
+
+rebuild: clean all
