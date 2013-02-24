@@ -55,8 +55,11 @@ all: libmt
 examples: libmt $(EXAMPLE_OBJS)
 	$(CC) $(LDFLAGS) $(EXAMPLE_OBJS) -o $(EXAMPLES_DIR)/marktab
 
-libmt: $(LIBMT_OBJS)
-	$(AR) $(ARFLAGS) $(INCLUDE_DIR)/libmt.a $<
+libmt: $(INCLUDE_DIR)/libmt.a
+
+# Library Target
+$(INCLUDE_DIR)/libmt.a: $(LIBMT_OBJS)
+	$(AR) $(ARFLAGS) $@ $<
 
 # Parser Target
 $(SRC_DIR)/mt_parser.o: $(SRC_DIR)/marktab.y
