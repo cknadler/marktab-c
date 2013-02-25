@@ -17,5 +17,7 @@ mt_parser.output
 spec/rcomp/results
 
 # clar generated files
+spec/clar/clar_test.dSYM
+clar_test
 .clarcache
 clar.suite
