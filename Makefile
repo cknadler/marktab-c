@@ -76,19 +76,25 @@ $(SRC_DIR)/mt_lexer.o: $(SRC_DIR)/marktab.l
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-test:
-	rcomp test
+# Test Targets
+test: rcomp_test clar_test
 
-# Note: build_clean nukes the bin directory.
-# Don't get attached to anything in there
+rcomp_test:
+	# rcomp test
+
+clar_test:
+	make -C $(CLAR_DIR)
+	make -C $(CLAR_DIR) test
+
+# Clean Targets
+clean: clean_build clean_test
+
 clean_build:
 	rm -f $(addprefix $(SRC_DIR)/,*.o mt_lexer.* mt_parser.*)
 	rm -f $(INCLUDE_DIR)/libmt.a
 
 clean_test:
-	rm -rf $(RCOMP_DIR)/results
-	rm -f $(addprefix $(CLAR_DIR)/,.clarcache clar.suite clar_test.h)
-
-clean: clean_build clean_test
+	# rm -rf $(RCOMP_DIR)/results
+	make -C $(CLAR_DIR) clean
 
 rebuild: clean all

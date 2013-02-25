@@ -24,7 +24,7 @@ objects = main.o hash.o
 # targets
 ########################################################################
 
-all: clar_test test
+all: clar_test
 
 clar_test: $(objects) clar_test.h clar.suite
 	$(CC) $(CFLAGS) -o $@ $(CLAR_PATH)/clar.c $(objects)
