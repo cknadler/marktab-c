@@ -12,15 +12,14 @@ AR = ar
 ########################################################################
 
 # cflags
-INCLUDE = -Iinclude/
 DEBUG = -g
 ERROR = -Wall -Wextra -Werror -Werror -Wno-unused-parameter -Wno-unused-function
 PEDANTIC = -pedantic -pedantic-errors
 STANDARD = -std=gnu99
 OPTIMIZATION = -O3
-CFLAGS = $(INCLUDE) $(DEBUG) $(ERROR) $(PEDANTIC) $(STANDARD) $(OPTIMIZATION)
+CFLAGS = $(DEBUG) $(ERROR) $(PEDANTIC) $(STANDARD) $(OPTIMIZATION)
 
-LDFLAGS = -lm
+LDFLAGS = -Iinclude/ -Llib/ -lm -lmt
 ARFLAGS = -rcs
 YFLAGS = -vyd
 LFLAGS =
@@ -32,18 +31,19 @@ LFLAGS =
 # Source Directories
 SRC_DIR = src
 INCLUDE_DIR = include
+LIB_DIR = lib
 EXAMPLES_DIR = examples
 
 # Test Directories
 RCOMP_DIR = spec/rcomp
 CLAR_DIR = spec/clar
 
+# Sources
 LIBMT_SRCS = $(wildcard $(SRC_DIR)/*.c)
-
 EXAMPLE_SRCS = $(EXAMPLES_DIR)/cli.c
 
+# Objects
 LIBMT_OBJS = $(addprefix $(SRC_DIR)/,mt_parser.o mt_lexer.o) $(LIBMT_SRCS:.c=.o)
-
 EXAMPLE_OBJS = $(EXAMPLE_SRCS:.c=.o)
 
 ########################################################################
@@ -55,10 +55,10 @@ all: libmt
 examples: libmt $(EXAMPLE_OBJS)
 	$(CC) $(LDFLAGS) $(EXAMPLE_OBJS) -o $(EXAMPLES_DIR)/marktab
 
-libmt: $(INCLUDE_DIR)/libmt.a
+libmt: $(LIB_DIR)/libmt.a
 
 # Library Target
-$(INCLUDE_DIR)/libmt.a: $(LIBMT_OBJS)
+$(LIB_DIR)/libmt.a: $(LIBMT_OBJS)
 	$(AR) $(ARFLAGS) $@ $<
 
 # Parser Target
@@ -91,7 +91,7 @@ clean: clean_build clean_test
 
 clean_build:
 	rm -f $(addprefix $(SRC_DIR)/,*.o mt_lexer.* mt_parser.*)
-	rm -f $(INCLUDE_DIR)/libmt.a
+	rm -f $(LIB_DIR)/libmt.a
 
 clean_test:
 	# rm -rf $(RCOMP_DIR)/results

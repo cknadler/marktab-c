@@ -1,9 +1,6 @@
 # Objects
 *.o
 
-# Libraries
-*.a
-
 # Bin directory
 bin
 
