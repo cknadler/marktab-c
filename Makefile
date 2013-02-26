@@ -20,7 +20,7 @@ OPTIMIZATION = -O3
 CFLAGS = $(DEBUG) $(ERROR) $(PEDANTIC) $(STANDARD) $(OPTIMIZATION)
 
 LDFLAGS = -Iinclude/ -Llib/ -lm -lmt
-ARFLAGS = -rcs
+ARFLAGS = rcs
 YFLAGS = -vyd
 LFLAGS =
 
@@ -36,7 +36,7 @@ EXAMPLES_DIR = examples
 
 # Test Directories
 RCOMP_DIR = spec/rcomp
-CLAR_DIR = spec/clar
+CHECK_DIR = spec/check
 
 # Sources
 LIBMT_SRCS = $(wildcard $(SRC_DIR)/*.c)
@@ -59,7 +59,7 @@ libmt: $(LIB_DIR)/libmt.a
 
 # Library Target
 $(LIB_DIR)/libmt.a: $(LIBMT_OBJS)
-	$(AR) $(ARFLAGS) $@ $<
+	$(AR) $(ARFLAGS) $@ $(LIBMT_OBJS)
 
 # Parser Target
 $(SRC_DIR)/mt_parser.o: $(SRC_DIR)/marktab.y
@@ -82,9 +82,8 @@ test: rcomp_test clar_test
 rcomp_test:
 	# rcomp test
 
-clar_test:
-	make -C $(CLAR_DIR)
-	make -C $(CLAR_DIR) test
+check_test:
+	make -C $(CHECK_DIR)
 
 # Clean Targets
 clean: clean_build clean_test
@@ -95,6 +94,6 @@ clean_build:
 
 clean_test:
 	# rm -rf $(RCOMP_DIR)/results
-	make -C $(CLAR_DIR) clean
+	make -C $(CHECK_DIR) clean
 
 rebuild: clean all
