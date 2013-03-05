@@ -24,7 +24,7 @@
 // TODO: look into a new hashing algorithm.
 static size_t Murmur3(const char* key, size_t len)
 {
-  
+
   #define mmix3(h,k) { \
     k *= m1; k = (k<<r1)|(k>>(sizeof(size_t)*8-r1)); \
     k *= m2; h *= 3; h ^= k; \
@@ -47,7 +47,7 @@ static size_t Murmur3(const char* key, size_t len)
 
   const char* tail = (const char*) dwords;
 
-  switch(len)
+  switch (len)
   {
     case 3: k ^= tail[2] << 16;
     case 2: k ^= tail[1] << 8;
@@ -178,7 +178,7 @@ mt_hash_insert(MtHash* hash, MtString* key, void* value)
 
       element->data = mt_tree_new();
       mt_tree_move_pair((MtTree *) element->data, pair);
-      
+
       ++hash->length;
 
       mt_tree_insert((MtTree *) element->data, key, value);
@@ -330,7 +330,7 @@ mt_hash_traverse(MtHash* hash, bool(*fn)(MtPair*, void*), void* data)
 
     if (element->is_tree)
       mt_tree_traverse((MtTree*) element->data, fn, data);
-    
+
     else if (element->data)
       fn((MtPair*) element->data, data);
   }
@@ -358,6 +358,13 @@ mt_hash_clear(MtHash* hash)
     element->data = NULL;
   }
 
+  // TODO: set size here
+  // Currently, if a hash table of notable size is cleared, it still
+  // keeps all of the buckets allocated in memory.
+  // This isn't that big of a deal, but eventually, it might be a good idea to
+  // deallocate the hash table allocated memory when it is cleared, setting the size
+  // to the stock 16 buckets.
+  // Maybe look into `realloc`?
   hash->length = 0;
 }
 
