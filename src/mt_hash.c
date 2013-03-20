@@ -315,6 +315,8 @@ mt_hash_remove(MtHash* hash, MtString* key)
       mt_pair_free((MtPair*) element->data);
       --hash->length;
     }
+
+    element->data = NULL;
   }
 }
 
@@ -347,6 +349,7 @@ mt_hash_clear(MtHash* hash)
   for (i = 0; i < hash->size; ++i)
   {
     element = &hash->buckets[i];
+    assert(element != NULL);
 
     if (element->is_tree)
       mt_tree_free((MtTree*) element->data);
@@ -358,13 +361,6 @@ mt_hash_clear(MtHash* hash)
     element->data = NULL;
   }
 
-  // TODO: set size here
-  // Currently, if a hash table of notable size is cleared, it still
-  // keeps all of the buckets allocated in memory.
-  // This isn't that big of a deal, but eventually, it might be a good idea to
-  // deallocate the hash table allocated memory when it is cleared, setting the size
-  // to the stock 16 buckets.
-  // Maybe look into `realloc`?
   hash->length = 0;
 }
 
@@ -372,9 +368,7 @@ void
 mt_hash_free(MtHash* hash)
 {
   assert(hash != NULL);
-
   mt_hash_clear(hash);
-
   free(hash->buckets);
   free(hash);
 }

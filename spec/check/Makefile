@@ -21,7 +21,9 @@ all: $(TEST_BINS)
 	$(CC) $(LDFLAGS) $< -lmt -lcheck -o $@
 
 clean:
-	rm -rf *.o *.test
+	rm -f *.o *.test *.log
 
 test:
 	./$(TEST_BINS)
+
+rebuild: clean all

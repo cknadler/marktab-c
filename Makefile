@@ -77,13 +77,11 @@ $(SRC_DIR)/mt_lexer.o: $(SRC_DIR)/marktab.l
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Test Targets
-test: rcomp_test clar_test
-
-rcomp_test:
-	# rcomp test
+test: rebuild check_test
 
 check_test:
-	make -C $(CHECK_DIR)
+	make -C $(CHECK_DIR) rebuild
+	make -C $(CHECK_DIR) test
 
 # Clean Targets
 clean: clean_build clean_test
@@ -93,7 +91,6 @@ clean_build:
 	rm -f $(LIB_DIR)/libmt.a
 
 clean_test:
-	# rm -rf $(RCOMP_DIR)/results
 	make -C $(CHECK_DIR) clean
 
 rebuild: clean all
