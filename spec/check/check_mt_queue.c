@@ -17,15 +17,30 @@ START_TEST(test_queue_enqueue)
   mt_queue_free(queue);
 } END_TEST
 
+START_TEST(test_queue_clear)
+{
+  MtQueue* queue = mt_queue_new();
+  int value = 8;
+
+  mt_queue_enqueue(queue, &value);
+  mt_queue_clear(queue);
+  fail_unless(queue->length == 0, "invalid queue length");
+
+  mt_queue_free(queue);
+} END_TEST
+
 Suite* hash_suite()
 {
   Suite* s = suite_create("queue");
 
   TCase* tc_enqueue = tcase_create("enqueue");
+  TCase* tc_clear = tcase_create("clear");
 
   tcase_add_test(tc_enqueue, test_queue_enqueue);
+  tcase_add_test(tc_clear, test_queue_clear);
 
   suite_add_tcase(s, tc_enqueue);
+  suite_add_tcase(s, tc_clear);
 
   return s;
 }

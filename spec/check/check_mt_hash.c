@@ -17,7 +17,7 @@ START_TEST(test_hash_insert)
   fail_unless(hash->length == 1, "invalid hash length");
 
   MtPair* pair = mt_hash_search(hash, key);
-  fail_unless(*((int*) pair->value) == 8, "invalid hash data");
+  fail_unless(*(int*) pair->value == 8, "invalid hash data");
 
   mt_hash_free(hash);
 } END_TEST
