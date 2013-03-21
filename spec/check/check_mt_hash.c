@@ -6,7 +6,6 @@
 #include <../../src/mt_hash.h>
 #include <../../src/mt_string.h>
 
-// test hash insert
 START_TEST(test_hash_insert)
 {
   MtHash* hash = mt_hash_new();
@@ -23,7 +22,6 @@ START_TEST(test_hash_insert)
   mt_hash_free(hash);
 } END_TEST
 
-// test hash remove
 START_TEST(test_hash_remove)
 {
   MtHash* hash = mt_hash_new();
@@ -40,9 +38,19 @@ START_TEST(test_hash_remove)
   mt_hash_free(hash);
 } END_TEST
 
-// test hash clear
+START_TEST(test_hash_clear)
+{
+  MtHash* hash = mt_hash_new();
 
-// test hash free
+  MtString* key = mt_string_new_from_utf8("str");
+  int value = 8;
+
+  mt_hash_insert(hash, key, &value);
+  mt_hash_clear(hash);
+  fail_unless(hash->length == 0, "invalid hash length");
+
+  mt_hash_free(hash);
+} END_TEST
 
 Suite* hash_suite()
 {
@@ -50,12 +58,15 @@ Suite* hash_suite()
 
   TCase* tc_insert = tcase_create("insert");
   TCase* tc_remove = tcase_create("remove");
+  TCase* tc_clear = tcase_create("clear");
 
   tcase_add_test(tc_insert, test_hash_insert);
   tcase_add_test(tc_remove, test_hash_remove);
+  tcase_add_test(tc_clear, test_hash_clear);
 
   suite_add_tcase(s, tc_insert);
   suite_add_tcase(s, tc_remove);
+  suite_add_tcase(s, tc_clear);
 
   return s;
 }
