@@ -66,7 +66,7 @@ static void mt_output_transition(MtTransition* transition);
 // Output the contents of a symbol to the current output line
 static void mt_output_symbol(MtSymbol* symbol, MtModifier override);
 
-// 
+//
 // Public
 //
 
@@ -78,12 +78,9 @@ mt_output(MtQueue* sections)
   MTO.line_buffer = mt_queue_new();
 
   // Iterate through every section
-  while (sections->size > 0)
-  {
-    // Generate tab for a single section
-    MtQueue* section = mt_queue_dequeue(sections);
-    mt_output_section(section);
-  }
+  mt_queue_dequeue_each_val(sections, {
+    mt_output_section(val);
+  });
 
   // Print the generated output
   mt_output_print();
@@ -103,7 +100,7 @@ MtOutputLine* mt_output_line_new()
   assert(line != NULL);
 
   line->length = 0;
-  
+
   // Initialize all string arrays to be '\0'
   int string;
   for (string = 0; string < MT_CONF.strings; ++string)
@@ -122,16 +119,12 @@ mt_output_line_free(MtOutputLine* line)
 static void
 mt_output_print()
 {
-  while(MTO.line_buffer->size > 0)
-  {
-    MtOutputLine* line = mt_queue_dequeue(MTO.line_buffer);
-
+  mt_queue_dequeue_each_val(MTO.line_buffer, {
     int i;
     for(i = 0; i < MT_CONF.strings; ++i)
-      printf("%s\n", line->content[i]);
-
-    mt_output_line_free(line);
-  }
+      printf("%s\n", ((MtOutputLine*) val)->content[i]);
+    mt_output_line_free(val);
+  });
 }
 
 static void
@@ -140,31 +133,29 @@ mt_output_section(MtQueue* section)
   MTO.current_line = mt_output_line_new();
   mt_output_header();
 
-  while(section->size > 0)
-  {
-    MtObject* object = mt_queue_dequeue(section);
-    mt_output_object(object, MT_MODIFIER_NONE);
-  }
+  mt_queue_dequeue_each_val(section, {
+    mt_output_object(val, MT_MODIFIER_NONE);
+  });
 
   mt_output_footer();
   mt_queue_enqueue(MTO.line_buffer, MTO.current_line);
-  
+
   mt_queue_free(section);
 }
 
 // Adds a header to the current output line
-static void 
+static void
 mt_output_header()
 {
   int i;
   for(i = 0; i < MT_CONF.strings; ++i)
   {
-    MTO.current_line->content[i][0] = MT_CONF.string_names[i]; 
+    MTO.current_line->content[i][0] = MT_CONF.string_names[i];
     MTO.current_line->content[i][1] = '|';
     MTO.current_line->content[i][2] = '-';
   }
 
-  MTO.current_line->length += 3;  
+  MTO.current_line->length += 3;
 }
 
 // Adds a footer to the current output line
@@ -225,7 +216,7 @@ mt_output_object(MtObject* object, MtModifier override)
     case MT_OBJ_SYMBOL:
       mt_output_symbol(object->as.symbol, override);
       break;
-      
+
     default:
       assert(false);
       break;
@@ -240,7 +231,7 @@ mt_output_note_line(MtNote* note, int length, MtModifier override)
 
   char* note_chars = malloc(MT_CONF_MAX_FRET_DIGITS);
   int note_length;
-  
+
   // Check for regular note or muted
   if (note->type == MT_NOTE_NOTE)
   {
@@ -254,9 +245,9 @@ mt_output_note_line(MtNote* note, int length, MtModifier override)
 
   int pos = MTO.current_line->length;
   int end = MTO.current_line->length + length;
-  
+
   // Print the note to the line
-  int i; 
+  int i;
   for (i = 0; i < note_length; ++i)
   {
     MTO.current_line->content[note->string][pos] = note_chars[i];
@@ -296,7 +287,7 @@ mt_output_note_line(MtNote* note, int length, MtModifier override)
   }
 
   // If length is longer than the note, fill in the rest with `-`
-  while (pos < end) 
+  while (pos < end)
   {
     MTO.current_line->content[note->string][pos] = '-';
     ++pos;
@@ -417,11 +408,11 @@ mt_output_sequence(MtSequence* sequence, MtModifier override)
   mt_queue_each_val(sequence->objects, {
     mt_output_object(val, mod);
   });
-} 
+}
 static void
 mt_output_transition(MtTransition* transition)
 {
-  assert(transition != NULL); 
+  assert(transition != NULL);
 
   // TODO: Refactor
   // Shouldn't always be max
@@ -459,7 +450,7 @@ mt_output_transition(MtTransition* transition)
       break;
   }
 
-  // Check to see if line break is necessary 
+  // Check to see if line break is necessary
   if ((MTO.current_line->length + 2) > MT_CONF.max_line_length)
     mt_output_line_break();
 
@@ -516,7 +507,7 @@ mt_output_transition(MtTransition* transition)
 
   // Write the transition content to the current line
   int pos = MTO.current_line->length;
-      
+
   int string;
   for (string = 0; string < MT_CONF.strings; ++string)
   {

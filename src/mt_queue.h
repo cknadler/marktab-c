@@ -38,7 +38,7 @@ void mt_queue_free(MtQueue* queue);
     MtQueueNode* node = NULL; \
     int pos; \
     void* val; \
-    for (pos = 0; queue_pos < self->length; ++queue_pos) { \
+    for (pos = 0; pos < self->length; ++pos) { \
       if (pos == 0) node = self->front; else node = node->next; \
       val = node->value; \
       block; \
