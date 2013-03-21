@@ -81,7 +81,6 @@ test: rebuild check_test
 
 check_test:
 	make -C $(CHECK_DIR) rebuild
-	make -C $(CHECK_DIR) test
 
 # Clean Targets
 clean: clean_build clean_test
