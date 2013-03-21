@@ -9,7 +9,7 @@
 
 MtQueueNode* mt_queue_node_new(void* value)
 {
-  MtQueueNode* node = (MtQueueNode *) malloc(sizeof(MtQueueNode));  
+  MtQueueNode* node = (MtQueueNode *) malloc(sizeof(MtQueueNode));
   assert(node != NULL);
 
   node->value = value;
@@ -21,7 +21,7 @@ MtQueueNode* mt_queue_node_new(void* value)
 void mt_queue_node_free(MtQueueNode* node)
 {
   assert(node != NULL);
-  
+
   node->value = NULL;
   node->next = NULL;
 
@@ -38,7 +38,7 @@ MtQueue* mt_queue_new()
   MtQueue* queue = (MtQueue *) malloc(sizeof(MtQueue));
   assert(queue != NULL);
 
-  queue->size = 0;
+  queue->length = 0;
   queue->front = NULL;
   queue->back = NULL;
 
@@ -49,28 +49,28 @@ void mt_queue_enqueue(MtQueue* queue, void* value)
 {
   assert(queue != NULL);
   assert(value != NULL);
-  
+
   MtQueueNode* node = mt_queue_node_new(value);
 
-  if (queue->size > 0)
+  if (queue->length > 0)
   {
     queue->back->next = node;
     queue->back = node;
-  } 
-  else 
+  }
+  else
   {
     queue->front = node;
     queue->back = node;
   }
 
-  queue->size++;
+  ++queue->length;
 }
 
 void* mt_queue_dequeue(MtQueue* queue)
 {
   assert(queue != NULL);
 
-  if (queue->size > 0)
+  if (queue->length > 0)
   {
     MtQueueNode* front_node = queue->front;
     void* value = front_node->value;
@@ -79,7 +79,7 @@ void* mt_queue_dequeue(MtQueue* queue)
 
     mt_queue_node_free(front_node);
 
-    --queue->size;
+    --queue->length;
 
     return value;
   }
@@ -94,7 +94,7 @@ void mt_queue_clear(MtQueue* queue)
 
   // TODO: Fix memory deallocation of queue
   // This will leak, all nodes need to be freed
-  queue->size = 0;
+  queue->length = 0;
   queue->front = NULL;
   queue->back = NULL;
 }
