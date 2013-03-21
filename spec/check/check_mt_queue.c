@@ -29,18 +29,69 @@ START_TEST(test_queue_clear)
   mt_queue_free(queue);
 } END_TEST
 
+START_TEST(test_queue_each_val)
+{
+  MtQueue* queue = mt_queue_new();
+  int value = 8;
+
+  // enqueue value 5 times
+  int i;
+  for (i = 0; i < 5; ++i)
+    mt_queue_enqueue(queue, &value);
+
+  fail_unless(queue->length == 5, "invalid queue length");
+
+  int count = 0;
+  mt_queue_each_val(queue, {
+    fail_unless(*(int*)val == 8, "invalid value");
+    ++count;
+  });
+
+  fail_unless(count == 5, "invalid queue length");
+
+  mt_queue_free(queue);
+} END_TEST
+
+START_TEST(test_queue_dequeue_each_val)
+{
+  MtQueue* queue = mt_queue_new();
+  int value = 8;
+
+  // enqueue value 5 times
+  int i;
+  for (i = 0; i < 5; ++i)
+    mt_queue_enqueue(queue, &value);
+
+  int count = 0;
+  mt_queue_dequeue_each_val(queue, {
+    fail_unless(*(int*)val == 8, "invalid value");
+    ++count;
+  });
+
+  fail_unless(count == 5, "invalid queue length");
+  fail_unless(queue->length == 0, "invalid queue length");
+
+  mt_queue_free(queue);
+} END_TEST
+
 Suite* hash_suite()
 {
   Suite* s = suite_create("queue");
 
   TCase* tc_enqueue = tcase_create("enqueue");
   TCase* tc_clear = tcase_create("clear");
+  TCase* tc_each_val = tcase_create("each_val");
+  TCase* tc_dequeue_each_val = tcase_create("dequeue_each_val");
 
   tcase_add_test(tc_enqueue, test_queue_enqueue);
   tcase_add_test(tc_clear, test_queue_clear);
+  tcase_add_test(tc_each_val, test_queue_each_val);
+  tcase_add_test(tc_dequeue_each_val, test_queue_dequeue_each_val);
 
   suite_add_tcase(s, tc_enqueue);
   suite_add_tcase(s, tc_clear);
+  suite_add_tcase(s, tc_each_val);
+  suite_add_tcase(s, tc_dequeue_each_val);
 
   return s;
 }
