@@ -36,7 +36,7 @@ mt_tree_node_new_from_pair(MtPair* pair)
   node->right = NULL;
 
   node->is_red = true;
-  
+
   return node;
 }
 
@@ -289,7 +289,7 @@ mt_tree_node_traverse(MtTreeNode* root, bool(*fn)(MtPair*, void*), void* data)
       {
         pre = pre->right;
       }
-      
+
       // Make the current node the right child of its in order predecessor
       if(pre->right == NULL)
       {
