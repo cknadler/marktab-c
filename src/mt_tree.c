@@ -18,7 +18,7 @@ mt_tree_node_new(MtString* key, void* value)
   node->right = NULL;
   node->left = NULL;
 
-  node->is_red = true;
+  node->color = RED;
 
   return node;
 }
@@ -35,7 +35,7 @@ mt_tree_node_new_from_pair(MtPair* pair)
   node->left = NULL;
   node->right = NULL;
 
-  node->is_red = true;
+  node->color = RED;
 
   return node;
 }
@@ -60,19 +60,19 @@ mt_tree_node_flip_color(MtTreeNode* node)
 {
   assert(node != NULL);
 
-  node->is_red = !node->is_red;
+  node->color = !node->color;
 
   if (node->left != NULL)
-    node->left->is_red = !node->left->is_red;
+    node->left->color = !node->left->color;
 
   if (node->right != NULL)
-    node->right->is_red = !node->right->is_red;
+    node->right->color = !node->right->color;
 }
 
 static bool
-mt_tree_node_is_red(MtTreeNode* node)
+mt_tree_node_color(MtTreeNode* node)
 {
-  return ((node != NULL) && node->is_red);
+  return ((node != NULL) && node->color);
 }
 
 static MtTreeNode*
@@ -85,8 +85,8 @@ mt_tree_node_rot_left(MtTreeNode* node)
 
   node->right = right->left;
   right->left = node;
-  right->is_red = node->is_red;
-  node->is_red = true;
+  right->color = node->color;
+  node->color = RED;
 
   return right;
 }
@@ -101,8 +101,8 @@ mt_tree_node_rot_right(MtTreeNode* node)
 
   node->left = left->right;
   left->right = node;
-  left->is_red = node->is_red;
-  node->is_red = true;
+  left->color = node->color;
+  node->color = RED;
 
   return left;
 }
@@ -114,7 +114,7 @@ mt_tree_node_redify_left(MtTreeNode* node)
 
   mt_tree_node_flip_color(node);
 
-  if ((node->right != NULL) && mt_tree_node_is_red(node->right->left))
+  if ((node->right != NULL) && mt_tree_node_color(node->right->left))
   {
     node->right = mt_tree_node_rot_right(node->right);
     node = mt_tree_node_rot_left(node);
@@ -131,7 +131,7 @@ mt_tree_node_redify_right(MtTreeNode* node)
 
   mt_tree_node_flip_color(node);
 
-  if ((node->left != NULL) && mt_tree_node_is_red(node->left->left))
+  if ((node->left != NULL) && mt_tree_node_color(node->left->left))
   {
     node = mt_tree_node_rot_right(node);
     mt_tree_node_flip_color(node);
@@ -151,7 +151,7 @@ mt_tree_node_insert(MtTree* tree, MtTreeNode* node, MtString* key, void* value)
     return mt_tree_node_new(key, value);
   }
 
-  if (mt_tree_node_is_red(node->left) && mt_tree_node_is_red(node->right))
+  if (mt_tree_node_color(node->left) && mt_tree_node_color(node->right))
     mt_tree_node_flip_color(node);
 
   int cmp = mt_string_compare(node->pair->key, key);
@@ -160,10 +160,10 @@ mt_tree_node_insert(MtTree* tree, MtTreeNode* node, MtString* key, void* value)
   else if (cmp < 0) node->left = mt_tree_node_insert(tree, node->left, key, value);
   else              node->right = mt_tree_node_insert(tree, node->right, key, value);
 
-  if (mt_tree_node_is_red(node->right) && !mt_tree_node_is_red(node->left))
+  if (mt_tree_node_color(node->right) && !mt_tree_node_color(node->left))
     mt_tree_node_rot_left(node);
 
-  if (mt_tree_node_is_red(node->left) && mt_tree_node_is_red(node->left->left))
+  if (mt_tree_node_color(node->left) && mt_tree_node_color(node->left->left))
     mt_tree_node_rot_right(node);
 
   return node;
@@ -174,13 +174,13 @@ mt_tree_node_fixup(MtTreeNode* node)
 {
   assert(node != NULL);
 
-  if (mt_tree_node_is_red(node->right))
+  if (mt_tree_node_color(node->right))
     node = mt_tree_node_rot_left(node);
 
-  if (mt_tree_node_is_red(node->left) && mt_tree_node_is_red(node->left->left))
+  if (mt_tree_node_color(node->left) && mt_tree_node_color(node->left->left))
     node = mt_tree_node_rot_left(node);
 
-  if (mt_tree_node_is_red(node->left))
+  if (mt_tree_node_color(node->left))
     mt_tree_node_flip_color(node);
 
   return node;
@@ -196,7 +196,7 @@ mt_tree_node_remove_min(MtTree* tree, MtTreeNode* node)
     return NULL;
   }
 
-  if (!mt_tree_node_is_red(node->left) && !mt_tree_node_is_red(node->left->left))
+  if (!mt_tree_node_color(node->left) && !mt_tree_node_color(node->left->left))
     node = mt_tree_node_redify_left(node);
 
   node->left = mt_tree_node_remove_min(tree, node->left);
@@ -222,7 +222,7 @@ static MtTreeNode* mt_tree_node_remove(MtTree* tree, MtTreeNode* node, MtString*
   {
     if (node->left != NULL)
     {
-      if (!mt_tree_node_is_red(node->left) && mt_tree_node_is_red(node->left->left))
+      if (!mt_tree_node_color(node->left) && mt_tree_node_color(node->left->left))
         node = mt_tree_node_redify_left(node);
 
       node->left = mt_tree_node_remove(tree, node->left, key);
@@ -230,7 +230,7 @@ static MtTreeNode* mt_tree_node_remove(MtTree* tree, MtTreeNode* node, MtString*
   }
   else
   {
-    if (mt_tree_node_is_red(node->left))
+    if (mt_tree_node_color(node->left))
       node = mt_tree_node_rot_right(node);
 
     if (mt_string_compare(key, node->pair->key) && (node->right == NULL))
@@ -242,7 +242,7 @@ static MtTreeNode* mt_tree_node_remove(MtTree* tree, MtTreeNode* node, MtString*
 
     if (node->right != NULL)
     {
-      if (!mt_tree_node_is_red(node->right) && !mt_tree_node_is_red(node->right->left))
+      if (!mt_tree_node_color(node->right) && !mt_tree_node_color(node->right->left))
         node = mt_tree_node_redify_right(node);
 
       if (mt_string_compare(key, node->pair->key) == 0)
@@ -314,7 +314,7 @@ static MtTreeNode* mt_tree_node_move_pair(MtTreeNode* node, MtPair* pair)
   if (node == NULL)
     return mt_tree_node_new_from_pair(pair);
 
-  if (mt_tree_node_is_red(node->left) && mt_tree_node_is_red(node->right))
+  if (mt_tree_node_color(node->left) && mt_tree_node_color(node->right))
     mt_tree_node_flip_color(node);
 
   int cmp = mt_string_compare(node->pair->key, pair->key);
@@ -322,10 +322,10 @@ static MtTreeNode* mt_tree_node_move_pair(MtTreeNode* node, MtPair* pair)
   else if (cmp < 0) node->left = mt_tree_node_move_pair(node->left, pair);
   else              node->right = mt_tree_node_move_pair(node->right, pair);
 
-  if (mt_tree_node_is_red(node->right) && !mt_tree_node_is_red(node->left))
+  if (mt_tree_node_color(node->right) && !mt_tree_node_color(node->left))
     node = mt_tree_node_rot_left(node);
 
-  if (mt_tree_node_is_red(node->left) && mt_tree_node_is_red(node->left->left))
+  if (mt_tree_node_color(node->left) && mt_tree_node_color(node->left->left))
     node = mt_tree_node_rot_right(node);
 
   return node;
@@ -375,7 +375,7 @@ mt_tree_insert(MtTree* tree, MtString* key, void* value)
   assert(key != NULL);
 
   tree->root = mt_tree_node_insert(tree, tree->root, key, value);
-  tree->root->is_red = false;
+  tree->root->color = BLACK;
 }
 
 void
@@ -389,9 +389,7 @@ mt_tree_remove(MtTree* tree, MtString* key)
     tree->root = mt_tree_node_remove(tree, tree->root, key);
 
     if (tree->root != NULL)
-    {
-      tree->root->is_red = false;
-    }
+      tree->root->color = BLACK;
   }
 }
 
@@ -433,5 +431,5 @@ mt_tree_move_pair(MtTree* tree, MtPair* pair)
   assert(pair != NULL);
 
   tree->root = mt_tree_node_move_pair(tree->root, pair);
-  tree->root->is_red = false;
+  tree->root->color = BLACK;
 }

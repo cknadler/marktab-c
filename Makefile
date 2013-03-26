@@ -93,3 +93,5 @@ clean_test:
 	make -C $(CHECK_DIR) clean
 
 rebuild: clean all
+
+.PHONY: clean test
