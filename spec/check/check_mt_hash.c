@@ -35,6 +35,9 @@ START_TEST(test_hash_remove)
   mt_hash_remove(hash, key);
   fail_unless(hash->length == 0, "invalid hash length");
 
+  MtPair* pair = mt_hash_search(hash, key);
+  fail_unless(pair == NULL, "value not properly removed from hash");
+
   mt_hash_free(hash);
 } END_TEST
 
