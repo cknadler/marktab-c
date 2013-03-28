@@ -187,30 +187,30 @@ mt_tree_node_fixup(MtTreeNode* node)
 }
 
 static MtTreeNode*
-mt_tree_node_remove_min(MtTree* tree, MtTreeNode* node)
+mt_tree_node_remove_min(MtTree* tree, MtTreeNode* h)
 {
-  if (node->left == NULL)
+  if (h->left == NULL)
   {
     --tree->size;
-    mt_tree_node_free(node);
+    mt_tree_node_free(h);
     return NULL;
   }
 
-  if (!mt_tree_node_color(node->left) && !mt_tree_node_color(node->left->left))
-    node = mt_tree_node_redify_left(node);
+  if (!mt_tree_node_color(h->left) && !mt_tree_node_color(h->left->left))
+    h = mt_tree_node_redify_left(h);
 
-  node->left = mt_tree_node_remove_min(tree, node->left);
+  h->left = mt_tree_node_remove_min(tree, h->left);
 
-  return mt_tree_node_fixup(node);
+  return mt_tree_node_fixup(h);
 }
 
 static MtTreeNode*
-mt_tree_node_find_min(MtTreeNode* node)
+mt_tree_node_find_min(MtTreeNode* h)
 {
-  while (node->left != NULL)
-    node = node->left;
+  while (h->left != NULL)
+    h = h->left;
 
-  return node;
+  return h;
 }
 
 static MtTreeNode* mt_tree_node_remove(MtTree* tree, MtTreeNode* node, MtString* key)
