@@ -76,68 +76,68 @@ mt_tree_node_color(MtTreeNode* node)
 }
 
 static MtTreeNode*
-mt_tree_node_rot_left(MtTreeNode* node)
+mt_tree_node_rot_left(MtTreeNode* h)
 {
-  assert(node != NULL);
-  assert(node->right != NULL);
+  assert(h != NULL);
+  assert(h->right != NULL);
 
-  MtTreeNode* right = node->right;
+  MtTreeNode* x = h->right;
 
-  node->right = right->left;
-  right->left = node;
-  right->color = node->color;
-  node->color = RED;
+  h->right = x->left;
+  x->left = h;
+  x->color = h->color;
+  h->color = RED;
 
-  return right;
+  return x;
 }
 
 static MtTreeNode*
-mt_tree_node_rot_right(MtTreeNode* node)
+mt_tree_node_rot_right(MtTreeNode* h)
 {
-  assert(node != NULL);
-  assert(node->left != NULL);
+  assert(h != NULL);
+  assert(h->left != NULL);
 
-  MtTreeNode* left = node->left;
+  MtTreeNode* x = h->left;
 
-  node->left = left->right;
-  left->right = node;
-  left->color = node->color;
-  node->color = RED;
+  h->left = x->right;
+  x->right = h;
+  x->color = h->color;
+  h->color = RED;
 
-  return left;
+  return x;
 }
 
 static MtTreeNode*
-mt_tree_node_redify_left(MtTreeNode* node)
+mt_tree_node_redify_left(MtTreeNode* h)
 {
-  assert(node != NULL);
+  assert(h != NULL);
 
-  mt_tree_node_flip_color(node);
+  mt_tree_node_flip_color(h);
 
-  if ((node->right != NULL) && mt_tree_node_color(node->right->left))
+  if ((h->right != NULL) && mt_tree_node_color(h->right->left))
   {
-    node->right = mt_tree_node_rot_right(node->right);
-    node = mt_tree_node_rot_left(node);
-    mt_tree_node_flip_color(node);
+    h->right = mt_tree_node_rot_right(h->right);
+    h = mt_tree_node_rot_left(h);
+    mt_tree_node_flip_color(h);
   }
 
-  return node;
+  return h;
 }
 
 static MtTreeNode*
-mt_tree_node_redify_right(MtTreeNode* node)
+mt_tree_node_redify_right(MtTreeNode* h)
 {
-  assert(node != NULL);
+  assert(h != NULL);
 
-  mt_tree_node_flip_color(node);
+  mt_tree_node_flip_color(h);
 
-  if ((node->left != NULL) && mt_tree_node_color(node->left->left))
+  if ((h->left != NULL) && mt_tree_node_color(h->left->left))
   {
-    node = mt_tree_node_rot_right(node);
-    mt_tree_node_flip_color(node);
+    h = mt_tree_node_rot_right(h);
+    mt_tree_node_flip_color(h);
   }
 
-  return node;
+  return h;
 }
 
 static MtTreeNode*
