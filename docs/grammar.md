@@ -1,6 +1,6 @@
 # marktab grammar
 
-The marktab grammar documentation. You can find the implemented version of this grammar, in bison, [here](https://github.com/cknadler/marktab/blob/master/src/y.tab.y).
+The marktab grammar documentation. You can find the implemented version of this grammar, in bison, [here](https://github.com/cknadler/marktab/blob/master/src/marktab.y).
 
 ## note
 
