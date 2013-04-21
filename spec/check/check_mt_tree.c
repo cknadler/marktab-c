@@ -35,10 +35,9 @@ START_TEST(test_tree_remove)
   fail_unless(tree->size == 1, "invalid tree size");
 
   mt_tree_remove(tree, key);
-  fail_unless(tree->size == 0, "invalid tree size");
-
   MtPair* pair = mt_tree_search(tree, key);
   fail_unless(pair == NULL, "value not properly removed from tree");
+  fail_unless(tree->size == 0, "invalid tree size");
 
   mt_tree_free(tree);
 } END_TEST
@@ -48,13 +47,13 @@ Suite* hash_suite()
   Suite* s = suite_create("tree");
 
   TCase* tc_insert = tcase_create("insert");
-  //TCase* tc_remove = tcase_create("remove");
+  TCase* tc_remove = tcase_create("remove");
 
   tcase_add_test(tc_insert, test_tree_insert);
-  //tcase_add_test(tc_remove, test_tree_remove);
+  tcase_add_test(tc_remove, test_tree_remove);
 
   suite_add_tcase(s, tc_insert);
-  //suite_add_tcase(s, tc_remove);
+  suite_add_tcase(s, tc_remove);
 
   return s;
 }

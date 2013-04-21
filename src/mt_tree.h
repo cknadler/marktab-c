@@ -14,13 +14,14 @@ typedef struct MtTreeNode
   MtPair* pair;
   struct MtTreeNode* left;
   struct MtTreeNode* right;
+  struct MtTreeNode* parent;
   bool color;
 } MtTreeNode;
 
 typedef struct MtTree
 {
   MtTreeNode* root;
-  size_t size;
+  //size_t size;
 } MtTree;
 
 MtTree* mt_tree_new();

@@ -9,10 +9,9 @@
 
 typedef struct MtHash
 {
-  struct MtHashElement* buckets;
+  MtPair* buckets;
   size_t size;
   size_t length;
-
 } MtHash;
 
 MtHash* mt_hash_new();
@@ -20,12 +19,6 @@ MtHash* mt_hash_new();
 MtPair* mt_hash_search(MtHash* hash, MtString* key);
 
 void mt_hash_insert(MtHash* hash, MtString* key, void* value);
-
-// TODO: move to private function
-void mt_hash_move_pair(MtHash* hash, MtPair* pair);
-
-// TODO: test
-void mt_hash_traverse(MtHash* hash, bool(*fn)(MtPair*, void*), void* data);
 
 void mt_hash_remove(MtHash* hash, MtString* key);
 
