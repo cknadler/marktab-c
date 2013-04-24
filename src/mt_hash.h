@@ -9,7 +9,7 @@
 
 typedef struct MtHash
 {
-  MtPair* buckets;
+  MtPair** buckets;
   size_t size;
   size_t length;
 } MtHash;

@@ -3,11 +3,9 @@
 #include <assert.h>
 #include <stdlib.h>
 
-#include "mt_tree.h"
-
 // Allocates and initializes the buckets for a hash based on its current size
 #define mt_hash_alloc_buckets(hash) { \
-    hash->buckets = (MtPair*) malloc(sizeof(MtPair) * hash->size); \
+    hash->buckets = malloc(sizeof(MtPair) * hash->size); \
     size_t i; \
     for (i = 0; i < hash->size; ++i) \
       hash->buckets[i] = NULL; \
@@ -69,39 +67,37 @@ static void mt_hash_double_size(MtHash* hash);
 static void
 mt_hash_insert_pair(MtHash* hash, MtPair* pair)
 {
+  assert(hash != NULL);
+  assert(pair != NULL);
+
   size_t index = pair->key->hash % hash->size;
+  MtPair* element = hash->buckets[index];
 
-  MtPair* element = &hash->buckets[index];
-  assert(element != NULL);
-
-  // Collision handling, linear probing
-  if (element != NULL)
+  // No Collision
+  if (element == NULL)
   {
-    size_t offset = 0;
+    hash->buckets[index] = pair;
+    ++hash->length;
 
-    // Search for an empty bucket
-    while (element != NULL)
-    {
-      element = &hash->buckets[(index + offset) % hash->size];
-
-      // Key already exists in the hash, replace the value
-      if (mt_string_compare(element->key, pair->key) == 0)
-      {
-        element = pair;
-        return;
-      }
-
-      ++offset;
-    }
+    // Expand the hash if necessary
+    if (hash->length >= 0.75 * hash->size)
+      mt_hash_double_size(hash);
   }
 
-  // The pair will be stored at the empty bucket that was found
-  element = pair;
-  ++hash->length;
+  // Collision handling, linear probing
+  while (element != NULL)
+  {
+    // Key already exists in the hash, replace the value
+    if (mt_string_compare(element->key, pair->key) == 0)
+    {
+      hash->buckets[index] = pair;
+      return;
+    }
 
-  // Expand the hash if necessary
-  if (hash->length >= 0.75 * hash->size)
-    mt_hash_double_size(hash);
+    ++index;
+    index %= hash->size;
+    element = hash->buckets[index];
+  }
 }
 
 static void
@@ -117,7 +113,7 @@ mt_hash_double_size(MtHash* hash)
   hash->length = 0;
 
   // Store old buckets
-  MtPair* old_buckets = hash->buckets;
+  MtPair** old_buckets = hash->buckets;
 
   // Create and init new buckets
   mt_hash_alloc_buckets(hash);
@@ -127,7 +123,7 @@ mt_hash_double_size(MtHash* hash)
   size_t i;
   for (i = 0; i < old_size; ++i)
   {
-    element = &old_buckets[i];
+    element = old_buckets[i];
     if (element)
       mt_hash_insert_pair(hash, element);
   }
@@ -143,7 +139,7 @@ mt_hash_double_size(MtHash* hash)
 MtHash*
 mt_hash_new()
 {
-  MtHash* hash = (MtHash *) malloc(sizeof(MtHash));
+  MtHash* hash = (MtHash*) malloc(sizeof(MtHash));
   assert(hash != NULL);
 
   hash->size = 16;
@@ -176,22 +172,16 @@ MtPair* mt_hash_search(MtHash* hash, MtString* key)
     key->hash = Murmur3(mt_string_get_utf8(key), mt_string_get_length(key));
 
   size_t index = key->hash % hash->size;
+  MtPair* element = hash->buckets[index];
 
-  MtPair* element = &hash->buckets[index];
-
-  // Key Collides
-  if (element != NULL)
+  while (element != NULL)
   {
-    size_t offset = 1;
+    if (mt_string_compare(key, element->key) == 0)
+      return element;
 
-    while (element != NULL)
-    {
-      if (mt_string_compare(key, element->key) == 0)
-        return element->value;
-
-      element = &hash->buckets[(index + offset) % hash->size];
-      ++offset;
-    }
+    ++index;
+    index %= hash->size;
+    element = hash->buckets[index];
   }
 
   // Nothing was found
@@ -208,34 +198,20 @@ mt_hash_remove(MtHash* hash, MtString* key)
     key->hash = Murmur3(mt_string_get_utf8(key), mt_string_get_length(key));
 
   size_t index = key->hash % hash->size;
+  MtPair* element = hash->buckets[index];
 
-  MtPair* element = &hash->buckets[index];
-  assert(element != NULL);
-
-  if (element->data != NULL)
+  while (element != NULL)
   {
-
-    if (element->is_tree)
+    if (mt_string_compare(key, element->key) == 0)
     {
-      MtTree* tree = element->data;
-
-      // Save the size before attempting to remove element from tree
-      size_t old_size = tree->size;
-
-      mt_tree_remove(tree, key);
-
-      // Decrement the size of the hash by the difference in the
-      // old and new sizes of the tree. This shouldn't ever be more than 1.
-      assert((old_size - tree->size) <= 1);
-      hash->length -= old_size - tree->size;
-    }
-    else
-    {
-      mt_pair_free((MtPair*) element->data);
+      hash->buckets[index] = NULL;
       --hash->length;
+      return;
     }
 
-    element->data = NULL;
+    ++index;
+    index %= hash->size;
+    element = hash->buckets[index];
   }
 }
 
@@ -244,23 +220,9 @@ mt_hash_clear(MtHash* hash)
 {
   assert(hash != NULL);
 
-  MtHashElement* element = NULL;
-
   size_t i;
   for (i = 0; i < hash->size; ++i)
-  {
-    element = &hash->buckets[i];
-    assert(element != NULL);
-
-    if (element->is_tree)
-      mt_tree_free((MtTree*) element->data);
-
-    if (element->data)
-      mt_pair_free((MtPair*) element->data);
-
-    element->is_tree = false;
-    element->data = NULL;
-  }
+    hash->buckets[i] = NULL;
 
   hash->length = 0;
 }
