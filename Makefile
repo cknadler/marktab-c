@@ -19,7 +19,6 @@ STANDARD = -std=gnu99
 OPTIMIZATION = -O3
 CFLAGS = $(DEBUG) $(ERROR) $(PEDANTIC) $(STANDARD) $(OPTIMIZATION)
 
-LDFLAGS = -Iinclude/ -Llib/ -lm -lmt
 ARFLAGS = rcs
 YFLAGS = -vyd
 LFLAGS =
@@ -78,10 +77,8 @@ check_test:
 	make -C $(CHECK_DIR) rebuild
 
 # Example Targets
-examples: libmt example_cli
-
-example_cli:
-	$(CC) $(LDFLAGS) $(CFLAGS) $(EXAMPLES_DIR)/cli.c -o $(EXAMPLES_DIR)/cli
+examples: libmt
+	make -C $(EXAMPLES_DIR)
 
 # Clean Targets
 clean: clean_build clean_test
