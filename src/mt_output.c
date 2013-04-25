@@ -123,6 +123,7 @@ mt_output_print()
     int i;
     for(i = 0; i < MT_CONF.strings; ++i)
       printf("%s\n", ((MtOutputLine*) val)->content[i]);
+    printf("\n");
     mt_output_line_free(val);
   });
 }
