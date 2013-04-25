@@ -2,56 +2,8 @@
 
 Concise, machine readable, guitar tabs.
 
-## Usage
-
-As of now, MarkTab is incomplete. If you want to play with it anyway, here is a quick guide.
-
-```bash
-git clone https://github.com/cknadler/marktab.git
-cd marktab
-make
-```
-
-The build process creates a bin directory where it places the MarkTab executable.
-
-The following will make a basic tab:
-
-```bash
-cd bin
-echo "1:1" > tab.mt
-./marktab tab.mt
-```
-
-## Development
-
-MarkTab is actively under development. Contributions are more than welcome.
-
-#### Build
-
-No dependencies, just run:
-
-```bash
-make
-```
-
-#### Testing
-
-Requirements:
-
-* ruby v1.9.3 or greater
-* bundler
-
-Before testing (only the first time) run: 
-
-```bash
-bundle install
-```
-
-And then, to run all tests:
-
-```bash
-make test
-```
+Stuff is totally hectic and not done right now. marktab is nearing its first
+release but until then, everything will likely be broken.
 
 ## Docs
 
