@@ -25,12 +25,12 @@ int yyerror(const char* msg)
 
 // Public Functions
 
-void marktab_render_tab_stdin()
+void marktab_rend_stdin()
 {
   // TODO: implement
 }
 
-int marktab_render_tab_file(char* file)
+int marktab_rend_file(char* file)
 {
   yyin = fopen(file, "r");
   if (yyin == NULL)

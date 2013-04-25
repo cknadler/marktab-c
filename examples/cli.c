@@ -3,5 +3,5 @@
 
 int main(int argc, char** argv)
 {
-  return marktab_render_tab_file(argv[1]);
+  return marktab_rend_file(argv[1]);
 }
