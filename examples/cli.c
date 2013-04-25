@@ -1,10 +1,7 @@
 #include <stdio.h>
-#include <stdbool.h>
+#include "marktab.h"
 
-int main(int argc, const char* argv[])
+int main(int argc, char** argv)
 {
-
-  printf("test\n");
-
-  return 0;
+  return marktab_render_tab_file(argv[1]);
 }

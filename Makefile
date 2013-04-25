@@ -40,20 +40,15 @@ CHECK_DIR = spec/check
 
 # Sources
 LIBMT_SRCS = $(wildcard $(SRC_DIR)/*.c)
-EXAMPLE_SRCS = $(EXAMPLES_DIR)/cli.c
 
 # Objects
 LIBMT_OBJS = $(addprefix $(SRC_DIR)/,mt_parser.o mt_lexer.o) $(LIBMT_SRCS:.c=.o)
-EXAMPLE_OBJS = $(EXAMPLE_SRCS:.c=.o)
 
 ########################################################################
 # targets
 ########################################################################
 
 all: libmt
-
-examples: libmt $(EXAMPLE_OBJS)
-	$(CC) $(LDFLAGS) $(EXAMPLE_OBJS) -o $(EXAMPLES_DIR)/marktab
 
 libmt: $(LIB_DIR)/libmt.a
 
@@ -81,6 +76,12 @@ test: rebuild check_test
 
 check_test:
 	make -C $(CHECK_DIR) rebuild
+
+# Example Targets
+examples: libmt example_cli
+
+example_cli:
+	$(CC) $(LDFLAGS) $(CFLAGS) $(EXAMPLES_DIR)/cli.c -o $(EXAMPLES_DIR)/cli
 
 # Clean Targets
 clean: clean_build clean_test
