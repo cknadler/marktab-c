@@ -106,7 +106,7 @@ MtQueue* current_chord_note_group;
   Initialization
 */
 
-%initial-action 
+%initial-action
 {
   // For now there is no need for pre-parse initializations
   // If there ever is, they would go here
@@ -180,8 +180,8 @@ object_group:
 
   | object
   {
-    mtr_current_object_queue_enqueue($1); 
-  } 
+    mtr_current_object_queue_enqueue($1);
+  }
   transition_chain
   {
     // TODO: Emit error if $1 is not a note or chord
@@ -207,8 +207,8 @@ transition_group:
     // TODO: Emit error if $2 is not a note or chord
     MtTransition* transition = mt_transition_new($1, $2);
     MtObject* transition_object = mt_object_new(MT_OBJ_TRANSITION, transition);
-    mtr_current_object_queue_enqueue(transition_object); 
-    mtr_current_object_queue_enqueue($2); 
+    mtr_current_object_queue_enqueue(transition_object);
+    mtr_current_object_queue_enqueue($2);
   }
 
 object:
@@ -232,11 +232,11 @@ object:
     $$ = mt_object_new(MT_OBJ_SYMBOL, mt_symbol_new($1, $2));
   }
   | MT_T_REST
-  { 
+  {
     $$ = mt_object_new_rest();
   }
 
-/* 
+/*
   NOTES
 */
 note:
@@ -253,36 +253,36 @@ note:
   | MT_T_NUMBER { $$ = mt_note_new(mtr_last_note_string(), $1); }
   | MT_T_MUTE { $$ = mt_note_new_muted(mtr_last_note_string()); }
 
-/* 
-  CHORDS 
+/*
+  CHORDS
 */
 inline_chord:
-  MT_T_LEFT_PAREN 
+  MT_T_LEFT_PAREN
   { current_chord_construction = mt_queue_new(); }
   chord_note_list MT_T_RIGHT_PAREN
   { $$ = mt_chord_new(current_chord_construction); }
- 
+
 chord_note_list:
   chord_note_list chord_note
   | chord_note
- 
+
 chord_note:
   { current_chord_note_group = mt_queue_new(); }
   chord_note_string_list MT_T_COLON chord_fret
   {
     mt_queue_dequeue_each_val(current_chord_note_group, {
-      mt_queue_enqueue(current_chord_construction, val); 
+      mt_queue_enqueue(current_chord_construction, val);
     });
 
     mt_queue_free(current_chord_note_group);
   }
- 
+
 chord_note_string_list:
   chord_note_string_list MT_T_COMMA chord_note_string
   | chord_note_string
 
 chord_note_string:
-  MT_T_NUMBER 
+  MT_T_NUMBER
   { mt_queue_enqueue(current_chord_note_group, mt_note_new_without_fret($1)); }
 
 chord_fret:
@@ -300,7 +300,7 @@ chord_fret:
   }
 
 /*
-  SEQUENCES 
+  SEQUENCES
 */
 inline_sequence:
   MT_T_LEFT_BRACKET
@@ -328,7 +328,7 @@ transition:
   DEFINITIONS
 */
 definition:
-  chord_definition 
+  chord_definition
   | sequence_definition
 
 chord_definition:
@@ -350,13 +350,13 @@ sequence_definition:
 
     mt_hash_insert(MTR.symbol_table, $1, value);
   }
- 
+
 /*
   OPTIONAL MODIFIERS AND MULTIPLIERS
 */
 multiplier:
   MT_T_MULTIPLY MT_T_NUMBER { $$ = $2; }
- 
+
 optional_modifier:
   MT_T_PALM_MUTE { $$ = MT_MODIFIER_PALM_MUTE; }
   | MT_T_HARMONIC { $$ = MT_MODIFIER_HARMONIC; }
