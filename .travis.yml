@@ -1,6 +1,6 @@
 language: c
 
-compiler: 
+compiler:
   - clang
   - gcc
 
