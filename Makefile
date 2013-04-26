@@ -81,7 +81,7 @@ examples: libmt
 	make -C $(EXAMPLES_DIR)
 
 # Clean Targets
-clean: clean_build clean_test
+clean: clean_build clean_test clean_examples
 
 clean_build:
 	rm -f $(addprefix $(SRC_DIR)/,*.o mt_lexer.* mt_parser.*)
@@ -89,6 +89,9 @@ clean_build:
 
 clean_test:
 	make -C $(CHECK_DIR) clean
+
+clean_examples:
+	make -C $(EXAMPLES_DIR) clean
 
 rebuild: clean all
 
