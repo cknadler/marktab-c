@@ -13,7 +13,7 @@ AR = ar
 
 # cflags
 DEBUG = -g
-ERROR = -Wall -Wextra -Werror -Werror -Wno-unused-parameter -Wno-unused-function
+ERROR = -Wall -Wextra -Werror -Wno-unused-parameter -Wno-unused-function
 PEDANTIC = -pedantic -pedantic-errors
 STANDARD = -std=gnu99
 OPTIMIZATION = -O3
