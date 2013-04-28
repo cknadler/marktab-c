@@ -1,5 +1,9 @@
-1:1 ^ 10
-
 chord: (1,2,3,4,5:1 6:7)
+chord2: (1,2:3)
+seq: [chord chord2]
 
-[[chord ^ 4 1:2 3:3 3 4 5 6 3 4 2 9 11 2 3 13] ^ 2] ^ 4
+chord
+
+chord2
+
+[chord chord2 1:2 3:3 3 4 5 6 3 ] ^ 2
