@@ -2,9 +2,6 @@
 
 Concise, machine readable, guitar tabs.
 
-Stuff is totally hectic and not done right now. marktab is nearing its first
-release but until then, everything will likely be broken.
-
 ## Docs
 
 The [MarkTab grammar](https://github.com/cknadler/marktab/blob/master/docs/grammar.md) is fairly solid at this point. Until the first implementation is finished, this is the only real source of documentation for the language. If you have any questions or comments, feel free to open an issue.
