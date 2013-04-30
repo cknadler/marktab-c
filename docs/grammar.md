@@ -43,7 +43,7 @@ E|-----|
 
 #### shorthand special case
 
-When a note is defined, all notes following default to the string of that note if a string isn't specified. 
+When a note is defined, all notes following default to the string of that note if a string isn't specified.
 
 For example, the following are equivalent:
 
@@ -167,7 +167,7 @@ E|----------------|
 
 #### shorthand
 
-This is an abreviated pattern for transitions. This allows you to write strings of notes, linked with transitions, without having to re-specify the string number for each note. 
+This is an abreviated pattern for transitions. This allows you to write strings of notes, linked with transitions, without having to re-specify the string number for each note.
 
 For example, the following are equivalent:
 
@@ -266,6 +266,23 @@ You can repeat the following:
 * chords (inline or defined)
 * rests
 * sequences (inline or defined)
+
+#### format
+
+```
+1:1 ^ 2
+```
+
+#### output
+
+```
+e|-1-1-|
+B|-----|
+G|-----|
+D|-----|
+A|-----|
+E|-----|
+```
 
 ## inline strings
 
