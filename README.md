@@ -17,7 +17,7 @@ libraries). To get Marktab up and running in your project:
 
 Currently, the API is pretty minimal (read terrible). More will be added soon.
 
-```
+```c
 // Renders a tab from stdin to stdout
 void marktab_rend_stdin();
 
