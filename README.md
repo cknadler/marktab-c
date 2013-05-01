@@ -1,4 +1,4 @@
-![marktab](docs/marktab.png)
+![Marktab](docs/marktab.png)
 
 [![Build Status](https://travis-ci.org/cknadler/marktab.png?branch=master)](https://travis-ci.org/cknadler/marktab)
 
@@ -27,7 +27,7 @@ int marktab_rend_file(char* file);
 
 ## Docs
 
-The [MarkTab grammar](https://github.com/cknadler/marktab/blob/master/docs/grammar.md) is fairly solid at this point. Until the first implementation is finished, this is the only real source of documentation for the language. If you have any questions or comments, feel free to open an issue.
+The [Marktab grammar](https://github.com/cknadler/marktab/blob/master/docs/grammar.md) is fairly solid at this point. Until the first implementation is finished, this is the only real source of documentation for the language. If you have any questions or comments, feel free to open an issue.
 
 There are several examples of Marktab in action located in `examples`.
 
