@@ -15,7 +15,7 @@ libraries). To get Marktab up and running in your project:
 
 ## API
 
-Currnently, the API is pretty minimal (read terrible). More will be added soon.
+Currently, the API is pretty minimal (read terrible). More will be added soon.
 
 ```
 // Renders a tab from stdin to stdout
@@ -35,7 +35,7 @@ There are several examples of Marktab in action located in `examples`.
 
 Issues and, better yet, pull requests are more than welcome. See [CONTRIBUTING](https://github.com/cknadler/marktab/blob/master/CONTRIBUTING.md) for details.
 
-Marktab would be what it is without the help of some awesome contributors.
+Marktab would not be what it is without the help of some awesome contributors.
 
 ## Copyright
 
