@@ -7,7 +7,9 @@ Concise, machine readable, guitar tabs.
 ## Library
 
 Marktab is a statically linked library written in flex, Bison and plain C99 (no
-libraries). To get Marktab up and running in your project:
+libraries). 
+
+To get Marktab up and running in your project:
 
 * build and install it
 * link against Marktab with `-lmt`
