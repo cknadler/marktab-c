@@ -6,7 +6,7 @@ Concise, machine readable, guitar tabs.
 
 ## Library
 
-Marktab is a statically linked library written in flex, Bison and plain C99 (no
+Marktab is a statically linkable C library written in flex, Bison and plain C99 (no
 libraries). 
 
 To get Marktab up and running in your project:
