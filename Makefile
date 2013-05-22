@@ -99,7 +99,7 @@ clean_examples:
 rebuild: clean all
 
 install: libmt
-	install -d $(LIB_DIR)
+	install -d $(INSTALL_PREFIX)/lib
 	install $(LIB_DIR)/libmt.a $(INSTALL_PREFIX)/lib/libmt.a
 
 uninstall:
