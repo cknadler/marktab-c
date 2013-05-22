@@ -28,7 +28,7 @@ Include Marktab's header:
 
 Link against Marktab with `gcc`:
 
-```Makefile
+```sh
 $ gcc prog.c -lmt
 ```
 
