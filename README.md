@@ -9,11 +9,28 @@ Concise, machine readable, guitar tabs.
 Marktab is a statically linkable C library written in flex, Bison and plain C99 (no
 libraries). 
 
-To get Marktab up and running in your project:
+To get Marktab up and running in your project...
 
-* build and install it
-* link against Marktab with `-lmt`
-* include Marktab's header in your project with `#include <marktab.h>`
+Build and install it:
+
+```sh
+$ make && make install
+```
+
+Include Marktab's header:
+
+```c
+// prog.c
+#include <marktab.h>
+
+//...
+```
+
+Link against Marktab with `gcc`:
+
+```Makefile
+$ gcc prog.c -lmt
+```
 
 ## API
 
