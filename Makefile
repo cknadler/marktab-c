@@ -37,6 +37,9 @@ EXAMPLES_DIR = examples
 RCOMP_DIR = spec/rcomp
 CHECK_DIR = spec/check
 
+# Install Directories
+INSTALL_PREFIX = /usr/local
+
 # Sources
 LIBMT_SRCS = $(wildcard $(SRC_DIR)/*.c)
 
@@ -94,5 +97,12 @@ clean_examples:
 	make -C $(EXAMPLES_DIR) clean
 
 rebuild: clean all
+
+install: libmt
+	install -d $(INSTALL_PREFIX)/lib
+	install $(LIB_DIR)/libmt.a $(INSTALL_PREFIX)/lib/libmt.a
+
+uninstall:
+	rm -f $(INSTALL_PREFIX)/lib/libmt.a
 
 .PHONY: clean test
